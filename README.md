@@ -6,9 +6,10 @@
 * a name next to a source link is the name of the channel, up to hiding certain *keywords*. The same goes for some incomplete links.
   * -d means a discord alias
   * -h means a hvids alias
-* I strive for scissor haircuts at home. More generally, I collect videos that are **salon-less and clipper-less.**
-# What the playlist names mean
-* TODO
+* I strive for scissor haircuts at home. More generally, I collect videos that are *salon-less and clipper-less.*
+#### What the playlist names mean:
+* I.* (ISpaceLengthChop, ICutScalp, etc) means that the video is worth watching an *I*nfinite amount of times, or it's nostalgic and I haven't downgraded it yet.
+* T.* (T10Inch\+[A-Z]*, TTrimLong[A-Z]) means that the video is worth watching *T*wice. Not as good as the I.* videos.
 #### Up to date sources:
 * https://www.youtube.com/user/MrKungla0/videos -h bangs-cutter
 * https://www.youtube.com/channel/UCzjiyMpyPuHnQyVFp9Nimbg/playlists pooppooper68
