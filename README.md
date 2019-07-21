@@ -1,7 +1,13 @@
 # prontab 07/21/19
-### Youtube
-#### Introduction
-https://www.youtube.com/channel/UCuQjQ-iqbHh-hIMrDwfYfYA/playlists is the main repo of vids. Come here to watch! Youtube is the best.
+## Youtube:
+#### Introduction:
+* https://www.youtube.com/channel/UCuQjQ-iqbHh-hIMrDwfYfYA/playlists Undesirable Truism -d crimeedge -h crimeedge
+  * This is my main repo of vids. Come here to watch! Youtube is the best.
+* a name next to a source link is the name of the channel, up to hiding certain *keywords*. The same goes for some incomplete links.
+  * -d means a discord alias
+  * -h means a hvids alias
+* I strive for scissor haircuts at home. More generally, I collect videos that are **salon-less and clipper-less.**
+# What the playlist names mean
 #### Up to date sources:
 * https://www.youtube.com/user/MrKungla0/videos -h bangs-cutter
 * https://www.youtube.com/channel/UCzjiyMpyPuHnQyVFp9Nimbg/playlists pooppooper68
@@ -13,7 +19,7 @@ https://www.youtube.com/channel/UCuQjQ-iqbHh-hIMrDwfYfYA/playlists is the main r
 * https://www.youtube.com/user/haircutzero/playlists haircutzero
   * damn dude your stuff is hard to sift through
 #### Unchecked Sources:
-* https://www.youtube.com/channel/UCHZ6_WrXmzIsnz-8Iav45rQ/videos longhair hj
+* https://www.youtube.com/channel/UCHZ6_WrXmzIsnz-8Iav45rQ/videos longhair hairj
 * https://www.youtube.com/channel/UCxiWoAD2YlScuiWpUVU6srw/videos мария гужва
 * https://www.youtube.com/channel/UCd0QhvVu4rYPkIGsJbTgD9g/videos RebelZero2012
 * https://www.youtube.com/channel/UCWhiTRiTkYIPw0LidZGAdpQ/videos Haircut&Hairmake
