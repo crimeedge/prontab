@@ -8,6 +8,7 @@
   * -h means a hvids alias
 * I strive for scissor haircuts at home. More generally, I collect videos that are **salon-less and clipper-less.**
 # What the playlist names mean
+* TODO
 #### Up to date sources:
 * https://www.youtube.com/user/MrKungla0/videos -h bangs-cutter
 * https://www.youtube.com/channel/UCzjiyMpyPuHnQyVFp9Nimbg/playlists pooppooper68
@@ -28,6 +29,7 @@
 * users/marcthedude/playlists -d rat attack
   * playlist/watchlater has 2 videos to clear.
 * https://hairvids.ng-bvg.de/videos/ -h altheeagle
+* https://www.hvids.net/viewtopic.php?f=16&p=130415#p130415 tool for grabbing hvids links, untested
 * https://drive.google.com/drive/u/0/folders/1AAFcJvAqOAuANh55gSWNH3NyirepUxNq -d nostrerm
 * https://www.instagram.com/crimeedge84/saved/
 ### Important Manga:
