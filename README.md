@@ -39,6 +39,15 @@
 * users/1906236/merrycatch22
 * g/176969/
 
+### Features I would like to see on YouTube:
+* User tagging system
+* rule based automatic cross-playlist duplicate video removal
+* automated private/deleted video removal
+* playlist size balancing
+* automated superplaylist combining
+* macros for various functions
+* default start times
+
 ### TODO:
 * update introduction
 * find a better interface of giving users info
