@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Sample Python code for youtube.channels.list
+# Sample Python code for youtube.playlistItems.insert
 # See instructions for running these code samples locally:
 # https://developers.google.com/explorer-help/guides/code_samples#python
 
@@ -10,7 +10,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
-scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
+scopes = ["https://www.googleapis.com/auth/youtube.force-ssl"]
 
 def main():
     # Disable OAuthlib's HTTPS verification when running locally.
@@ -28,13 +28,21 @@ def main():
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, credentials=credentials)
 
-    request = youtube.channels().list(
-        part="snippet,contentDetails,statistics",
-        mine=True
+    request = youtube.playlistItems().insert(
+        part="snippet",
+        body={
+          "snippet": {
+            "playlistId": "WL",
+            "resourceId": {
+              "kind": "youtube#video",
+              "videoId": "whateverItIsThatGoesIntoTheWatchLater"
+            }
+          }
+        }
     )
     response = request.execute()
 
-    print(response)
+    print(response['nextToken'])
 
 if __name__ == "__main__":
     main()

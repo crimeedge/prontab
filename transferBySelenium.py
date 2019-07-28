@@ -17,4 +17,4 @@ if __name__ == '__main__':
     chrome_options.add_argument("--user-data-dir=chrome-data")
     browser = webdriver.Chrome('chromedriver.exe',chrome_options=chrome_options)
 
-    browser.get("https://transferring-videos.com/en/back/")
+    browser.get("https://google.com/")

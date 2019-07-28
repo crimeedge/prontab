@@ -34,7 +34,7 @@
 * https://drive.google.com/drive/u/0/folders/1AAFcJvAqOAuANh55gSWNH3NyirepUxNq -d nostrerm
 * https://www.instagram.com/crimeedge84/saved/
 ### Important Manga:
-* Usagi-san Team no Atama wo Washawasha Suru Hon (Girls und Panzer)
+* Usagi-san Team no Atama wo Washawasha Suru Hon (Girls und Panze
 * Yukari no Atama wo Washawasha Suru Hon 4 (1+2) (Girls und Panzer)
 * users/1906236/merrycatch22
 * g/176969/
