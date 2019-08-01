@@ -5,9 +5,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as ec
 import re
+import sys
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import json
+from selenium.common.exceptions import TimeoutException
 
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
@@ -78,7 +80,8 @@ def scroll_test(driver):
         # print(last_height)
     # driver.quit()
 def next_test(driver):
-    url = "https://www.youtube.com/watch?v=1970HF7f2cE&list=LLhNOMudRAcLnj6hlCLjLk9A&index=1849"
+    url = ""
+    # url = "https://www.youtube.com/watch?v=1970HF7f2cE&list=LLhNOMudRAcLnj6hlCLjLk9A&index=1849"
     # url = "https://www.youtube.com/watch?v=e3Rq5nIJ8KM&list=LLhNOMudRAcLnj6hlCLjLk9A&index=3"
     driver.get(url)
     i=0
@@ -92,7 +95,7 @@ def next_test(driver):
                     (By.CSS_SELECTOR, ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
             else:
                 already_seen+=1
-                print(url + " already in data.txt "+str(already_seen))
+                print(url + " already in "+known_file+" "+str(already_seen))
             actions = ActionChains(driver)
             actions.key_down(Keys.SHIFT)
             actions.key_down('n')
@@ -106,13 +109,22 @@ def next_test(driver):
             WebDriverWait(driver, 200).until(lambda x: not driver.current_url == url)
             driver.get(driver.current_url)
             i+=1
+
+    except TimeoutException as ex:
+        print(ex)
+        print(url)
     except:
-        print("exception:"+url)
+        print("Unexpected error:", sys.exc_info()[0])
+        print(url)
     print('scrape finish')
 if __name__ == "__main__":
-
-    known_video_ids = json.load(open('dataNoApi.txt','r'))
-
+    known_file = 'dataNoApi.txt'
+    known_video_ids=[]
+    try:
+        known_video_ids = json.load(open(known_file,'r'))
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        print("known_video_ids grab failure")
     chrome_options = Options()
     chrome_options.add_argument("--disable-infobars")
     chrome_options.add_argument("--user-data-dir=chrome-data")

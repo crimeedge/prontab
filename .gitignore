@@ -1,4 +1,4 @@
 .creds
 *.json
 chrome-data
-*.txt
+data*.txt
