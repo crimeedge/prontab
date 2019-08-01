@@ -11,10 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as ec
 
-scopes = ["https://www.googleapis.com/auth/youtube"]
+scope = ["https://www.googleapis.com/auth/youtube"]
 
 
-def get_authenticated_service():
+def get_authenticated_service(scopes=scope):
     api_service_name = "youtube"
     api_version = "v3"
     client_secrets_file = "o.json"
@@ -87,7 +87,6 @@ def playlist_items(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
 
     return items
 
-
 def filter_private_playlist_item_ids(items):
     privates = []
     for item in items:
@@ -95,6 +94,14 @@ def filter_private_playlist_item_ids(items):
         if item['snippet']['title'] == 'Private video':
             privates.append(item['id'])
     return privates
+
+
+def get_video_ids(items):
+    video_ids = []
+    for item in items:
+        # print(item['snippet']['title'])
+            video_ids.append(item['snippet']['resourceId']['videoId'])
+    return video_ids
 
 
 def delete_by_playlist_item_id(youtube, playlist_item_id):
@@ -109,9 +116,9 @@ def delete_by_playlist_item_id(youtube, playlist_item_id):
 def main():
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
-    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    # os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-    youtube = get_authenticated_service()
+    youtube = get_authenticated_service(scope)
     playlist_ids = get_playlist_ids_list(youtube)
     count = 0
     for playlist_id in playlist_ids:
@@ -119,6 +126,7 @@ def main():
         privates = filter_private_playlist_item_ids(items)
         for playlist_item_id in privates:
             try:
+                print(playlist_item_id)
                 delete_by_playlist_item_id(youtube, playlist_item_id)
                 count += 1
             except HttpError as err:
