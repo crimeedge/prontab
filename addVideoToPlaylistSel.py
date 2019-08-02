@@ -9,8 +9,8 @@ import json
 from selenium.common.exceptions import TimeoutException
 
 from driverMethods import create_driver, login_to_youtube
-from makeYoutube import get_authenticated_service
-from removePrivates import get_video_ids, playlist_items
+from makeYoutube import get_authenticated_service, get_api_service
+from removePrivates import get_video_ids, get_playlist_items_from_id, filter_private_playlist_items
 
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
@@ -128,8 +128,7 @@ def next_test(driver):
 
 
 def dupe_test(driver):
-    # youtube = get_authenticated_service()
-    video_ids = get_video_ids(playlist_items(youtube, 'PLXoAM842ovaDEU76pkObKtgYjNE9rWiUc'))
+    video_ids = get_video_ids(get_playlist_items_from_id(youtube, 'PLXoAM842ovaDEU76pkObKtgYjNE9rWiUc'))
     dupes = []
     for video_id in video_ids:
         if video_id in known_video_ids:
@@ -145,19 +144,42 @@ def dupe_test(driver):
         # break
 
 
+def add_vids(vid_sublist):
+    driver = create_driver(False)
+    driver.maximize_window()
+    login_to_youtube(driver)
+    for vid in vid_sublist:
+        driver.get("https://www.youtube.com/watch?v=" + vid)
+        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+            (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
+        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+            (By.CSS_SELECTOR,
+             ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+
+
 if __name__ == "__main__":
-    known_file = 'dataNoApi.txt'
+
+    known_file = 'data3373.txt'
+    playlist_id = 'LLhNOMudRAcLnj6hlCLjLk9A'
+
     known_video_ids = []
-    youtube = get_authenticated_service()
     try:
         known_video_ids = json.load(open(known_file, 'r'))
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
+    except FileNotFoundError as err:
+        # print("Unexpected error:", sys.exc_info()[0])
+        print(err)
         print("known_video_ids grab failure")
-    driver = create_driver(False)
+        raise SystemExit
+    youtube = get_api_service()
 
-    driver.maximize_window()
+    video_ids = get_video_ids(filter_private_playlist_items( get_playlist_items_from_id(youtube, playlist_id),False))
 
-    login_to_youtube(driver)
+    unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
+
+    # driver = create_driver(False)
+    #
+    # driver.maximize_window()
+    #
+    # login_to_youtube(driver)
     # next_test(driver)
     # dupe_test(driver)

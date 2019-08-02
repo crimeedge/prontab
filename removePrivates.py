@@ -4,6 +4,7 @@ from googleapiclient.errors import HttpError
 
 from makeYoutube import get_authenticated_service, scope
 
+
 def get_playlist_ids_list(youtube):
     request = youtube.playlists().list(
         part="contentDetails",
@@ -14,7 +15,7 @@ def get_playlist_ids_list(youtube):
     return [item['id'] for item in response['items']]
 
 
-def playlist_items(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
+def get_playlist_items_from_id(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
     request = youtube.playlistItems().list(
         part="snippet,contentDetails",
         maxResults=50,
@@ -29,13 +30,21 @@ def playlist_items(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
     return items
 
 
-def filter_private_playlist_item_ids(items, get_privates=True):
-    privates = []
+def filter_private_playlist_items(items, get_privates=True):
+    filtered_items = []
     for item in items:
         # print(item['snippet']['title'])
         if (item['snippet']['title'] == 'Private video') == get_privates:
-            privates.append(item['id'])
-    return privates
+            filtered_items.append(item)
+    return filtered_items
+
+
+def filter_private_playlist_item_ids(items, get_privates=True):
+    return get_id_from_items(filter_private_playlist_items(items,get_privates))
+
+
+def get_id_from_items(items):
+    return [item['id'] for item in items]
 
 
 def get_video_ids(items):
@@ -64,7 +73,7 @@ def main():
     playlist_ids = get_playlist_ids_list(youtube)
     count = 0
     for playlist_id in playlist_ids:
-        items = playlist_items(youtube, playlist_id)
+        items = get_playlist_items_from_id(youtube, playlist_id)
         privates = filter_private_playlist_item_ids(items)
         for playlist_item_id in privates:
             try:
