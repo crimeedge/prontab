@@ -1,26 +1,14 @@
 # -*- coding: utf-8 -*-
-import googleapiclient.discovery
 from googleapiclient.errors import HttpError
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 import re,time
+
+from driverMethods import create_driver
+from makeYoutube import get_api_service
 
 video_id_prog = re.compile(r'v=([^&]+)')
 time_prog = re.compile(r'&t=([^&]+)')
 comment_prog = re.compile(r'(\d)+:(\d\d)')
-
-
-def create_driver():
-    chrome_options = Options()
-    chrome_options.add_argument('--always-authorized-plugins=true')
-    chrome_options.add_argument("--disable-infobars")
-    chrome_options.add_extension('uBlock-Origin_v1.20.0.crx')
-    chrome_options.add_argument("--user-data-dir=chrome-data")
-    driver = webdriver.Chrome('chromedriver.exe', chrome_options=chrome_options)
-
-    driver.get("https://youtube.com/")
-    return driver
 
 
 def get_comment_time(youtube, video_id="MLVcmQ62luE", comment_author="Undesirable Truism"):
@@ -51,20 +39,16 @@ def check_diff_video_id(driver):
 
 
 def main():
-    api_service_name = "youtube"
-    api_version = "v3"
-    key = open('.creds').readlines()[0].strip()
-
-    youtube = googleapiclient.discovery.build(
-        api_service_name, api_version, developerKey=key)
+    youtube = get_api_service()
     # global driver
     driver = create_driver()
+    driver.get("https://www.youtube.com")
     global video_id
     video_id = "INIT"
-    for _ in range(5):
-        print(driver.current_url)
-        time.sleep(5)
-    for x in range(3):
+    # for _ in range(5):
+    #     print(driver.current_url)
+    #     time.sleep(5)
+    for _ in range(99999):
         WebDriverWait(driver, 99999).until(check_diff_video_id)
         video_id = video_id_prog.search(driver.current_url).group(1)
         print(video_id)

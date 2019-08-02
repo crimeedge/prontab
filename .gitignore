@@ -1,4 +1,7 @@
-.creds
+.creds*
 *.json
 chrome-data
 data*.txt
+.idea/
+__pycache__/
+selenium_tests/

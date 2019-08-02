@@ -1,8 +1,9 @@
-from removePrivates import get_authenticated_service
+from makeYoutube import get_authenticated_service
 import re
 
 video_id_prog = re.compile(r'v=([^&]+)')
 scope = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+
 
 def get_comment_id(youtube, video_id, comment_author="Undesirable Truism"):
     request = youtube.commentThreads().list(
@@ -20,12 +21,14 @@ def get_comment_id(youtube, video_id, comment_author="Undesirable Truism"):
 
     return ids
 
-def removeComment(youtube,id):
+
+def remove_comment(youtube, id):
     request = youtube.comments().delete(
         id=id
     )
     request.execute()
-    print('comment '+id+' deleted')
+    print('comment ' + id + ' deleted')
+
 
 def main():
     youtube = get_authenticated_service(scope)
@@ -33,10 +36,11 @@ def main():
         url = input("url to kill all comments:")
         if video_id_prog.search(url):
             # print (video_id_prog.search(url).group(1))
-            ids = get_comment_id(youtube,video_id_prog.search(url).group(1))
+            ids = get_comment_id(youtube, video_id_prog.search(url).group(1))
             # print(ids)
             for id in ids:
-                removeComment(youtube, id)
+                remove_comment(youtube, id)
+
 
 if __name__ == '__main__':
     main()
