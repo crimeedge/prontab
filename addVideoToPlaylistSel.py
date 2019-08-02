@@ -150,13 +150,20 @@ def add_vids(vid_sublist):
     driver = create_driver(False)
     driver.maximize_window()
     login_to_youtube(driver)
+    broken_vids = []
     for vid in vid_sublist:
         driver.get("https://www.youtube.com/watch?v=" + vid)
-        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-            (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
-        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-            (By.CSS_SELECTOR,
-             ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+        try:
+            WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
+                (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
+            WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
+                (By.CSS_SELECTOR,
+                 ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+        except TimeoutException as ex:
+            print(ex)
+            print("https://www.youtube.com/watch?v=" + vid + " machine broke")
+            broken_vids.append(vid)
+    return broken_vids
 
 
 if __name__ == "__main__":
@@ -179,7 +186,7 @@ if __name__ == "__main__":
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
     i = 0
-    NUM_DRIVERS = 5
+    NUM_DRIVERS = 10
     print(len(unknown_video_ids))
     while i < len(unknown_video_ids):
         j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
@@ -189,9 +196,15 @@ if __name__ == "__main__":
     for split in split_uvi:
         print(len(split))
 
-    with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
-        threader.map(add_vids, split_uvi)
+    broken_total = []
 
+    with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+        for _ in threader.map(add_vids, split_uvi):
+            broken_total.extend(_)
+
+    with open('dataBroken.txt', 'w') as outfile:
+        json.dump(broken_total, outfile)
+    print("done")
     # driver = create_driver(False)
     #
     # driver.maximize_window()

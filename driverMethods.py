@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-
+from platform import system
 
 def create_driver(with_data=True):
     chrome_options = Options()
@@ -10,7 +10,10 @@ def create_driver(with_data=True):
     chrome_options.add_extension('uBlock-Origin_v1.20.0.crx')
     if with_data:
         chrome_options.add_argument("--user-data-dir=chrome-data")
-    driver = webdriver.Chrome('chromedriver.exe', chrome_options=chrome_options)
+    if system().lower() == 'darwin':
+        driver = webdriver.Chrome('chromedriver', chrome_options=chrome_options)
+    else:
+        driver = webdriver.Chrome('chromedriver.exe', chrome_options=chrome_options)
     return driver
 
 
@@ -26,8 +29,8 @@ def login_to_youtube(driver):
     youtube_user = driver.find_element_by_xpath('//*[@id="identifierId"]')
     youtube_user.send_keys(creds[0] + '\n')
 
-    youtube_pass = WebDriverWait(driver, 10).until(
+    youtube_pass = WebDriverWait(driver, 200).until(
         lambda x: x.find_element_by_xpath('//*[@id="password"]/div[1]/div/div[1]/input'))
     youtube_pass.send_keys(creds[1] + '\n')
 
-    WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="search"]'))
+    WebDriverWait(driver, 200).until(lambda x: x.find_element_by_xpath('//*[@id="search"]'))

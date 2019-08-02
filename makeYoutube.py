@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from driverMethods import create_driver
+
 
 def get_api_service():
     api_service_name = "youtube"
@@ -41,10 +43,7 @@ def run_selenium(flow, **kwargs):
 
     auth_url, _ = flow.authorization_url(**kwargs)
 
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-infobars")
-    chrome_options.add_argument("--user-data-dir=chrome-data")
-    driver = webdriver.Chrome('chromedriver.exe', chrome_options=chrome_options)
+    driver = create_driver()
     driver.get(auth_url)
     WebDriverWait(driver, 20).until(
         ec.element_to_be_clickable((By.ID, "profileIdentifier"))).click()
