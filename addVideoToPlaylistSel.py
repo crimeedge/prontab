@@ -174,13 +174,24 @@ if __name__ == "__main__":
         raise SystemExit
     youtube = get_api_service()
 
-    video_ids = get_video_ids(filter_private_playlist_items( get_playlist_items_from_id(youtube, playlist_id),False))
+    video_ids = get_video_ids(filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
 
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
+    i = 0
+    NUM_DRIVERS = 5
+    print(len(unknown_video_ids))
+    while i < len(unknown_video_ids):
+        j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
+        split_uvi.append(unknown_video_ids[i:j])
+        i = j
+
+    for split in split_uvi:
+        print(len(split))
 
     with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
         threader.map(add_vids, split_uvi)
+
     # driver = create_driver(False)
     #
     # driver.maximize_window()
