@@ -12,6 +12,8 @@ from driverMethods import create_driver, login_to_youtube
 from makeYoutube import get_authenticated_service, get_api_service
 from removePrivates import get_video_ids, get_playlist_items_from_id, filter_private_playlist_items
 
+from concurrent.futures import ThreadPoolExecutor
+
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
 
@@ -175,7 +177,10 @@ if __name__ == "__main__":
     video_ids = get_video_ids(filter_private_playlist_items( get_playlist_items_from_id(youtube, playlist_id),False))
 
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
+    split_uvi = []
 
+    with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+        threader.map(add_vids, split_uvi)
     # driver = create_driver(False)
     #
     # driver.maximize_window()
