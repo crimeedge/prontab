@@ -21,7 +21,7 @@ if __name__ == "__main__":
     for playlist_id in playlist_ids:
             items = get_playlist_items_from_id(youtube, playlist_id)
             known_video_ids.extend(get_video_ids(items))
-
+    known_video_ids.extend(json.load(open("dataBroken.txt", 'r')))
     print(len(known_video_ids))
     with open('data3373.txt', 'w') as outfile:
         json.dump(known_video_ids, outfile)

@@ -169,7 +169,7 @@ def add_vids(vid_sublist):
 if __name__ == "__main__":
 
     known_file = 'data3373.txt'
-    playlist_id = 'LLhNOMudRAcLnj6hlCLjLk9A'
+    playlist_id = 'PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE'
 
     known_video_ids = []
     try:
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
     i = 0
-    NUM_DRIVERS = 10
+    NUM_DRIVERS = 5
     print(len(unknown_video_ids))
     while i < len(unknown_video_ids):
         j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
