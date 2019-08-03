@@ -8,9 +8,6 @@ from makeYoutube import get_authenticated_service
 import json
 
 if __name__ == "__main__":
-    api_service_name = "youtube"
-    api_version = "v3"
-    key = open('.creds').readlines()[0].strip()
 
     youtube = get_authenticated_service()
 
@@ -19,9 +16,13 @@ if __name__ == "__main__":
     known_video_ids = []
 
     for playlist_id in playlist_ids:
-            items = get_playlist_items_from_id(youtube, playlist_id)
-            known_video_ids.extend(get_video_ids(items))
-    known_video_ids.extend(json.load(open("dataBroken.txt", 'r')))
+        items = get_playlist_items_from_id(youtube, playlist_id)
+        known_video_ids.extend(get_video_ids(items))
+    broken_total = json.load(open("dataBroken.json", 'r'))
+    print(len(broken_total))
     print(len(known_video_ids))
-    with open('data3373.txt', 'w') as outfile:
+    known_video_ids.extend(broken_total)
+    known_video_ids = list(set(known_video_ids))
+    print(len(known_video_ids))
+    with open('dataKnown.json', 'w') as outfile:
         json.dump(known_video_ids, outfile)

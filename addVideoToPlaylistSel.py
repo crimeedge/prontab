@@ -13,6 +13,7 @@ from makeYoutube import get_authenticated_service, get_api_service
 from removePrivates import get_video_ids, get_playlist_items_from_id, filter_private_playlist_items
 
 from concurrent.futures import ThreadPoolExecutor
+from pyformance import timer, time_calls
 
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
@@ -53,8 +54,6 @@ index_prog = re.compile(r'index=5\d\d\d')
 #                 ec.element_to_be_clickable((By.XPATH, '//*[@id="pl-video-list"]/button/span/span[2]'))).click()
 #
 #         # // *[ @ id = "pl-load-more-destination"] / tr[1] / td[3] / span / a / span / span / span / img
-
-
 # def scroll_test(driver):
 #     driver.get('https://www.youtube.com/playlist?list=LLhNOMudRAcLnj6hlCLjLk9A')
 #     SCROLL_PAUSE_TIME = 2
@@ -86,66 +85,62 @@ index_prog = re.compile(r'index=5\d\d\d')
 #         # last_height = new_height
 #         # print(last_height)
 #     # driver.quit()
+# def next_test(driver):
+#     # url = "https://www.youtube.com/watch?v=1970HF7f2cE&list=LLhNOMudRAcLnj6hlCLjLk9A&index=1849"
+#     url = "https://www.youtube.com/watch?v=ILrhMTJofLw&list=LLhNOMudRAcLnj6hlCLjLk9A&index=3733"
+#     driver.get(url)
+#     i = 0
+#     already_seen = 0
+#     try:
+#         while i < 3151 and not index_prog.search(driver.current_url):
+#             url = driver.current_url
+#             if not video_id_prog.search(url).group(1) in known_video_ids:
+#                 WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+#                     (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
+#                 WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+#                     (By.CSS_SELECTOR,
+#                      ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+#             else:
+#                 already_seen += 1
+#                 print(url + " already in " + known_file + " " + str(already_seen))
+#             actions = ActionChains(driver)
+#             actions.key_down(Keys.SHIFT)
+#             actions.key_down('n')
+#             actions.key_up(Keys.SHIFT)
+#             actions.key_up('n')
+#             actions.perform()
+#             # WebDriverWait(driver, 20).until(ec.element_to_be_clickable(
+#             #     (By.CSS_SELECTOR, "#button > .ytd-add-to-playlist-renderer"))).click()
+#             # WebDriverWait(driver, 20).until(ec.element_to_be_clickable(
+#             #     (By.CSS_SELECTOR, ".ytp-next-button"))).click()
+#             WebDriverWait(driver, 200).until(lambda x: not driver.current_url == url)
+#             driver.get(driver.current_url)
+#             i += 1
+#
+#     except TimeoutException as ex:
+#         print(ex)
+#         print(url)
+#     except:
+#         print("Unexpected error:", sys.exc_info()[0])
+#         print(url)
+#     print('scrape finish')
+# def dupe_test(driver):
+#     video_ids = get_video_ids(get_playlist_items_from_id(youtube, 'PLXoAM842ovaDEU76pkObKtgYjNE9rWiUc'))
+#     dupes = []
+#     for video_id in video_ids:
+#         if video_id in known_video_ids:
+#             dupes.append(video_id)
+#     print(len(dupes))
+#     for dupe in dupes:
+#         driver.get("https://www.youtube.com/watch?v=" + dupe)
+#         WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+#             (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
+#         WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
+#             (By.CSS_SELECTOR,
+#              ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+#         # break
 
-
-def next_test(driver):
-    # url = "https://www.youtube.com/watch?v=1970HF7f2cE&list=LLhNOMudRAcLnj6hlCLjLk9A&index=1849"
-    url = "https://www.youtube.com/watch?v=ILrhMTJofLw&list=LLhNOMudRAcLnj6hlCLjLk9A&index=3733"
-    driver.get(url)
-    i = 0
-    already_seen = 0
-    try:
-        while i < 3151 and not index_prog.search(driver.current_url):
-            url = driver.current_url
-            if not video_id_prog.search(url).group(1) in known_video_ids:
-                WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-                    (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
-                WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-                    (By.CSS_SELECTOR,
-                     ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
-            else:
-                already_seen += 1
-                print(url + " already in " + known_file + " " + str(already_seen))
-            actions = ActionChains(driver)
-            actions.key_down(Keys.SHIFT)
-            actions.key_down('n')
-            actions.key_up(Keys.SHIFT)
-            actions.key_up('n')
-            actions.perform()
-            # WebDriverWait(driver, 20).until(ec.element_to_be_clickable(
-            #     (By.CSS_SELECTOR, "#button > .ytd-add-to-playlist-renderer"))).click()
-            # WebDriverWait(driver, 20).until(ec.element_to_be_clickable(
-            #     (By.CSS_SELECTOR, ".ytp-next-button"))).click()
-            WebDriverWait(driver, 200).until(lambda x: not driver.current_url == url)
-            driver.get(driver.current_url)
-            i += 1
-
-    except TimeoutException as ex:
-        print(ex)
-        print(url)
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        print(url)
-    print('scrape finish')
-
-
-def dupe_test(driver):
-    video_ids = get_video_ids(get_playlist_items_from_id(youtube, 'PLXoAM842ovaDEU76pkObKtgYjNE9rWiUc'))
-    dupes = []
-    for video_id in video_ids:
-        if video_id in known_video_ids:
-            dupes.append(video_id)
-    print(len(dupes))
-    for dupe in dupes:
-        driver.get("https://www.youtube.com/watch?v=" + dupe)
-        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-            (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
-        WebDriverWait(driver, 200).until(ec.element_to_be_clickable(
-            (By.CSS_SELECTOR,
-             ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
-        # break
-
-
+@time_calls
 def add_vids(vid_sublist):
     driver = create_driver(False)
     driver.maximize_window()
@@ -167,9 +162,8 @@ def add_vids(vid_sublist):
 
 
 if __name__ == "__main__":
-
-    known_file = 'data3373.txt'
-    playlist_id = 'PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE'
+    known_file = 'dataKnown.json'
+    playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A','PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd','PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
     known_video_ids = []
     try:
@@ -181,7 +175,12 @@ if __name__ == "__main__":
         raise SystemExit
     youtube = get_api_service()
 
-    video_ids = get_video_ids(filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
+    video_ids = []
+
+    for playlist_id in playlist_ids:
+        curr_video_ids = get_video_ids(
+            filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
+        video_ids.extend(curr_video_ids)
 
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
@@ -196,19 +195,18 @@ if __name__ == "__main__":
     for split in split_uvi:
         print(len(split))
 
-    broken_total = []
+    broken_total = json.load(open("dataBroken.json", 'r'))
+    try:
+        with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+            for _ in threader.map(add_vids, split_uvi):
+                broken_total.extend(_)
+    except:
+        print("Unexpected threading error")
 
-    with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
-        for _ in threader.map(add_vids, split_uvi):
-            broken_total.extend(_)
+    broken_total = list(set(broken_total))
 
-    with open('dataBroken.txt', 'w') as outfile:
+    with open('dataBroken.json', 'w') as outfile:
         json.dump(broken_total, outfile)
-    print("done")
-    # driver = create_driver(False)
-    #
-    # driver.maximize_window()
-    #
-    # login_to_youtube(driver)
-    # next_test(driver)
-    # dupe_test(driver)
+
+    print(timer("test_calls").get_mean())
+    print(timer("test_calls").get_count())
