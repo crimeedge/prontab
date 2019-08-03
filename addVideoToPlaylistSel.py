@@ -1,20 +1,19 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as ec
 import re
-import sys
-from selenium.webdriver.common.action_chains import ActionChains
 import json
 from selenium.common.exceptions import TimeoutException
 
 from driverMethods import create_driver, login_to_youtube
-from makeYoutube import get_authenticated_service, get_api_service
+from hvidsYoutubeIds import get_ids_from_hvids_filename
+from makeYoutube import get_api_service
 from removePrivates import get_video_ids, get_playlist_items_from_id, filter_private_playlist_items
 
-from concurrent.futures import ThreadPoolExecutor
-from pyformance import timer, time_calls
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from pyformance import MetricsRegistry
 
+import time
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
 
@@ -140,13 +139,14 @@ index_prog = re.compile(r'index=5\d\d\d')
 #              ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
 #         # break
 
-@time_calls
+
 def add_vids(vid_sublist):
     driver = create_driver(False)
     driver.maximize_window()
     login_to_youtube(driver)
     broken_vids = []
     for vid in vid_sublist:
+        ms = time.time()
         driver.get("https://www.youtube.com/watch?v=" + vid)
         try:
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
@@ -154,6 +154,7 @@ def add_vids(vid_sublist):
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR,
                  ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+            reg.histogram("succ_add").add(time.time()-ms)
         except TimeoutException as ex:
             print(ex)
             print("https://www.youtube.com/watch?v=" + vid + " machine broke")
@@ -161,7 +162,15 @@ def add_vids(vid_sublist):
     return broken_vids
 
 
+def get_ids_from_playlist_ids():
+    for playlist_id in playlist_ids:
+        curr_video_ids = get_video_ids(
+            filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
+        video_ids.extend(curr_video_ids)
+
+
 if __name__ == "__main__":
+    reg = MetricsRegistry
     known_file = 'dataKnown.json'
     playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A','PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd','PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
@@ -176,16 +185,14 @@ if __name__ == "__main__":
     youtube = get_api_service()
 
     video_ids = []
+    get_ids_from_playlist_ids()
+    # video_ids = get_ids_from_hvids_filename()
 
-    for playlist_id in playlist_ids:
-        curr_video_ids = get_video_ids(
-            filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
-        video_ids.extend(curr_video_ids)
 
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
     i = 0
-    NUM_DRIVERS = 5
+    NUM_DRIVERS = 4
     print(len(unknown_video_ids))
     while i < len(unknown_video_ids):
         j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
@@ -208,5 +215,4 @@ if __name__ == "__main__":
     with open('dataBroken.json', 'w') as outfile:
         json.dump(broken_total, outfile)
 
-    print(timer("test_calls").get_mean())
-    print(timer("test_calls").get_count())
+    print(reg.dump_metrics())
