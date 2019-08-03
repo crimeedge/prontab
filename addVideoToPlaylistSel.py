@@ -170,7 +170,7 @@ def get_ids_from_playlist_ids():
 
 
 if __name__ == "__main__":
-    reg = MetricsRegistry
+    reg = MetricsRegistry()
     known_file = 'dataKnown.json'
     playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A','PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd','PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
@@ -204,7 +204,7 @@ if __name__ == "__main__":
 
     broken_total = json.load(open("dataBroken.json", 'r'))
     try:
-        with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+        with ProcessPoolExecutor(max_workers=len(split_uvi)) as threader:
             for _ in threader.map(add_vids, split_uvi):
                 broken_total.extend(_)
     except:
