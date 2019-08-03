@@ -3,13 +3,13 @@ from collections import deque
 import googleapiclient
 
 from removePrivates import get_playlist_ids_list, get_playlist_items_from_id, get_video_ids
-from makeYoutube import get_authenticated_service
+from makeYoutube import get_authenticated_service, get_api_service
 
 import json
 
 if __name__ == "__main__":
 
-    youtube = get_authenticated_service()
+    youtube = get_api_service()
 
     playlist_ids = get_playlist_ids_list(youtube)
 

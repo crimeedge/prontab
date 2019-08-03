@@ -5,11 +5,11 @@ from googleapiclient.errors import HttpError
 from makeYoutube import get_authenticated_service, scope
 
 
-def get_playlist_ids_list(youtube):
+def get_playlist_ids_list(youtube,channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
     request = youtube.playlists().list(
         part="contentDetails",
         maxResults=50,
-        mine=True
+        channelId=channel_id
     )
     response = request.execute()
     return [item['id'] for item in response['items']]
