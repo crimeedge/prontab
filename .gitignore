@@ -5,4 +5,3 @@ chrome-data
 .idea/
 __pycache__/
 selenium_tests/
-*.js
