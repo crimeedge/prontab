@@ -196,7 +196,7 @@ if __name__ == "__main__":
     #         filter_private_playlist_items(get_playlist_items_from_id(youtube, "PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G"), False))
     # video_ids = json.load(open('dMyUnlisted.json', 'r'))
     # unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
-    unknown_video_ids = json.load(open('dDiffs.json', 'r'))[int(sys.argv[2]):int(sys.argv[3])]
+    unknown_video_ids = json.load(open('dNonDelDiffs.json', 'r'))
     split_uvi = []
     i = 0
     NUM_DRIVERS = int(sys.argv[1])
