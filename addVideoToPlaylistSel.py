@@ -179,12 +179,13 @@ if __name__ == "__main__":
                     'PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd', 'PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
     known_video_ids = []
-    known_video_ids = json.load(open('dataKnown.json', 'r'))
+    # known_video_ids = json.load(open('dataKnown.json', 'r'))
+    known_video_ids = json.load(open('dataTempUnlisted.json', 'r'))
 
     youtube = get_api_service()
-
-    video_ids = get_ids_from_playlist_ids(youtube,poopzero_playlist_ids)
-    video_ids.extend(get_ids_from_hvids_filename('dataHvids.txt'))
+    video_ids = json.load(open('dataDiffsUnlisted.json','r'))
+    # video_ids.extend(get_ids_from_playlist_ids(youtube,poopzero_playlist_ids))
+    # video_ids.extend(get_ids_from_hvids_filename('dataHvids.txt'))
 
     # known_video_ids = get_video_ids(
     #         filter_private_playlist_items(get_playlist_items_from_id(youtube, "PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G"), False))
