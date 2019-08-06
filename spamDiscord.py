@@ -14,7 +14,7 @@ if __name__ == '__main__':
     login_to_discord(driver)
     time.sleep(3)
     driver.get('https://discordapp.com/channels/570509358677360650/570509358677360652')
-    known_video_ids = json.load(open('dataUnlisted.json', 'r'))
+    known_video_ids = json.load(open('dMyUnlisted.json', 'r'))
     paste_text = ""
     for id in known_video_ids:
         if len(paste_text) < 1980:

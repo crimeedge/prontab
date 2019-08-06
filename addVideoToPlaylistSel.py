@@ -1,3 +1,5 @@
+import sys
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as ec
@@ -174,27 +176,30 @@ def get_ids_from_playlist_ids(youtube, playlist_ids):
 
 
 if __name__ == "__main__":
+    mgs = time.time()
     reg = MetricsRegistry()
     poopzero_playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A',
                     'PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd', 'PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
     known_video_ids = []
-    # known_video_ids = json.load(open('dataKnown.json', 'r'))
-    known_video_ids = json.load(open('dataTempUnlisted.json', 'r'))
+    known_video_ids.extend(json.load(open('dMyKnown.json', 'r')))
+    known_video_ids.extend(json.load(open('dBroken.json', 'r')))
+    # known_video_ids = json.load(open('dataTempUnlisted.json', 'r'))
 
     youtube = get_api_service()
-    video_ids = json.load(open('dataDiffsUnlisted.json','r'))
+    # video_ids = json.load(open('dataDiffsUnlisted.json','r'))
+    video_ids = json.load(open('dDiffs.json','r'))
     # video_ids.extend(get_ids_from_playlist_ids(youtube,poopzero_playlist_ids))
-    # video_ids.extend(get_ids_from_hvids_filename('dataHvids.txt'))
+    # video_ids.extend(get_ids_from_hvids_filename('dHvidsLinks.txt'))
 
     # known_video_ids = get_video_ids(
     #         filter_private_playlist_items(get_playlist_items_from_id(youtube, "PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G"), False))
-    # video_ids = json.load(open('dataUnlisted.json', 'r'))
-    unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
-
+    # video_ids = json.load(open('dMyUnlisted.json', 'r'))
+    # unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
+    unknown_video_ids = json.load(open('dDiffs.json', 'r'))[int(sys.argv[2]):int(sys.argv[3])]
     split_uvi = []
     i = 0
-    NUM_DRIVERS = 1
+    NUM_DRIVERS = int(sys.argv[1])
     print(len(unknown_video_ids))
     while i < len(unknown_video_ids):
         j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
@@ -204,7 +209,7 @@ if __name__ == "__main__":
     for split in split_uvi:
         print(len(split))
 
-    broken_total = json.load(open("dataBroken.json", 'r'))
+    broken_total = json.load(open("dBroken.json", 'r'))
     try:
         with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
             for _ in threader.map(add_vids, split_uvi):
@@ -214,8 +219,8 @@ if __name__ == "__main__":
 
     broken_total = list(set(broken_total))
 
-    with open('dataBroken.json', 'w') as outfile:
+    with open('dBroken.json', 'w') as outfile:
         json.dump(broken_total, outfile)
-
+    reg.histogram("total").add(time.time() - mgs)
     print(reg.dump_metrics())
     print("done")

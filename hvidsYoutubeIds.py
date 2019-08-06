@@ -24,4 +24,4 @@ def get_ids_from_hvids_filename(filename):
 
 
 if __name__ == '__main__':
-    get_ids_from_hvids_filename('dataHvids.txt')
+    get_ids_from_hvids_filename('dHvidsLinks.txt')

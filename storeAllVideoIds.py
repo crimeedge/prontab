@@ -19,13 +19,13 @@ def my_youtube_ids_to_json():
     for playlist_id in playlist_ids:
         items = get_playlist_items_from_id(youtube, playlist_id)
         known_video_ids.extend(get_video_ids(items))
-    broken_total = json.load(open("dataBroken.json", 'r'))
-    print(len(broken_total))
+    # broken_total = json.load(open("dBroken.json", 'r'))
+    # print(len(broken_total))
     print(len(known_video_ids))
-    known_video_ids.extend(broken_total)
+    # known_video_ids.extend(broken_total)
     known_video_ids = list(set(known_video_ids))
-    print(len(known_video_ids))
-    with open('dataKnown.json', 'w') as outfile:
+    # print(len(known_video_ids))
+    with open('dMyKnown.json', 'w') as outfile:
         json.dump(known_video_ids, outfile)
 
 
@@ -45,13 +45,13 @@ def other_youtube_ids_to_json():
         known_video_ids.extend(get_video_ids(items))
     known_video_ids = list(set(known_video_ids))
     print(len(known_video_ids))
-    with open('dataH0Poop.json', 'w') as outfile:
+    with open('dH0Poop.json', 'w') as outfile:
         json.dump(known_video_ids, outfile)
 
 def store_differences_to_json():
-    diffs = set(json.load(open('dataH0Poop.json', 'r'))).difference(set(json.load(open('dataKnown.json', 'r'))))
+    diffs = set(json.load(open('dH0Poop.json', 'r'))).difference(set(json.load(open('dMyKnown.json', 'r'))))
     print (len(diffs))
-    with open('dataDiffs.json', 'w') as outfile:
+    with open('dDiffs.json', 'w') as outfile:
         json.dump(list(diffs), outfile)
 
 def temp_unlisted():
@@ -72,5 +72,5 @@ def temp_unlisted():
 if __name__ == "__main__":
     # my_youtube_ids_to_json()
     # other_youtube_ids_to_json()
-    # store_differences_to_json()
-    temp_unlisted()
+    store_differences_to_json()
+    # temp_unlisted()
