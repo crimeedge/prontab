@@ -2,7 +2,7 @@
 
 from googleapiclient.errors import HttpError
 
-from makeYoutube import get_authenticated_service, scope
+from makeYoutube import get_authenticated_service, scope, get_api_service
 
 
 def get_playlist_ids_list(youtube,channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
@@ -11,8 +11,13 @@ def get_playlist_ids_list(youtube,channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
         maxResults=50,
         channelId=channel_id
     )
-    response = request.execute()
-    return [item['id'] for item in response['items']]
+    ids = []
+    while request:
+        response = request.execute()
+        ids.extend([item['id'] for item in response['items']])
+        request = youtube.playlistItems().list_next(request, response)
+
+    return ids
 
 
 def get_playlist_items_from_id(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
@@ -87,3 +92,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # youtube = get_api_service()
+    # listy = get_playlist_ids_list(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
+    # print (listy)
+    # print (len(listy))

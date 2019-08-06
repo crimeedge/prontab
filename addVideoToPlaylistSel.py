@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from pyformance import MetricsRegistry
 
 import time
+
 video_id_prog = re.compile(r'v=([^&]+)')
 index_prog = re.compile(r'index=5\d\d\d')
 
@@ -154,7 +155,8 @@ def add_vids(vid_sublist):
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR,
                  ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
-            reg.histogram("succ_add").add(time.time()-ms)
+            reg.histogram("succ_add").add(time.time() - ms)
+            print(reg.dump_metrics())
         except TimeoutException as ex:
             print(ex)
             print("https://www.youtube.com/watch?v=" + vid + " machine broke")
@@ -162,37 +164,36 @@ def add_vids(vid_sublist):
     return broken_vids
 
 
-def get_ids_from_playlist_ids():
+def get_ids_from_playlist_ids(youtube, playlist_ids):
+    ret_video_ids = []
     for playlist_id in playlist_ids:
         curr_video_ids = get_video_ids(
             filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id), False))
-        video_ids.extend(curr_video_ids)
+        ret_video_ids.extend(curr_video_ids)
+    return ret_video_ids
 
 
 if __name__ == "__main__":
     reg = MetricsRegistry()
-    known_file = 'dataKnown.json'
-    playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A','PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd','PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
+    poopzero_playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A',
+                    'PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd', 'PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
     known_video_ids = []
-    try:
-        known_video_ids = json.load(open(known_file, 'r'))
-    except FileNotFoundError as err:
-        # print("Unexpected error:", sys.exc_info()[0])
-        print(err)
-        print("known_video_ids grab failure")
-        raise SystemExit
+    known_video_ids = json.load(open('dataKnown.json', 'r'))
+
     youtube = get_api_service()
 
-    video_ids = []
-    get_ids_from_playlist_ids()
-    # video_ids = get_ids_from_hvids_filename()
+    video_ids = get_ids_from_playlist_ids(youtube,poopzero_playlist_ids)
+    video_ids.extend(get_ids_from_hvids_filename('dataHvids.txt'))
 
-
+    # known_video_ids = get_video_ids(
+    #         filter_private_playlist_items(get_playlist_items_from_id(youtube, "PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G"), False))
+    # video_ids = json.load(open('dataUnlisted.json', 'r'))
     unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
+
     split_uvi = []
     i = 0
-    NUM_DRIVERS = 4
+    NUM_DRIVERS = 1
     print(len(unknown_video_ids))
     while i < len(unknown_video_ids):
         j = min(i + len(unknown_video_ids) // NUM_DRIVERS + 1, len(unknown_video_ids))
@@ -204,7 +205,7 @@ if __name__ == "__main__":
 
     broken_total = json.load(open("dataBroken.json", 'r'))
     try:
-        with ProcessPoolExecutor(max_workers=len(split_uvi)) as threader:
+        with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
             for _ in threader.map(add_vids, split_uvi):
                 broken_total.extend(_)
     except:
@@ -216,3 +217,4 @@ if __name__ == "__main__":
         json.dump(broken_total, outfile)
 
     print(reg.dump_metrics())
+    print("done")

@@ -20,9 +20,10 @@ def create_driver(with_data=True):
     return driver
 
 
-def login_to_youtube(driver):
-    file = open(".creds2", "r")
-    creds = file.read().splitlines()
+def login_to_youtube(driver, creds=None):
+    if not creds:
+        file = open(".creds2", "r")
+        creds = file.read().splitlines()
 
     driver.get(
         'https://accounts.google.com/signin/v2/identifier?service=youtube&uilel=3&passive=true&continue=https%3A%2F'
@@ -41,5 +42,21 @@ def login_to_youtube(driver):
     WebDriverWait(driver, 200).until(lambda x: x.find_element_by_xpath('//*[@id="search"]'))
 
 
+def login_to_discord(driver, creds=None):
+    if not creds:
+        file = open(".creds2", "r")
+        creds = file.read().splitlines()
+    driver.get('http://discordapp.com/login')
+
+    discord_user = WebDriverWait(driver, 200).until(
+        ec.visibility_of_element_located(
+            (By.XPATH, '//*[@id="app-mount"]/div[1]/div/div[2]/div/form/div/div[3]/div[1]/div/input')))
+    discord_user.send_keys(creds[0])
+
+    discord_pass = WebDriverWait(driver, 200).until(ec.visibility_of_element_located((By.XPATH,
+                                                                                      '//*[@id="app-mount"]/div[1]/div/div[2]/div/form/div/div[3]/div[2]/div/input')))
+    discord_pass.send_keys(creds[1] + '\n')
+
+
 if __name__ == '__main__':
-    login_to_youtube(create_driver(False))
+    login_to_discord(create_driver(False))
