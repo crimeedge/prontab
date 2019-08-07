@@ -40,11 +40,10 @@ def dump_unlisteds_from_known():
 
 def dump_unlisteds_from_diffs():
     youtube = get_api_service()
-    known_file = 'dDiffs.json'
-    known_video_ids = json.load(open(known_file, 'r'))
+    known_video_ids = json.load(open('dDiffs.json', 'r'))
     unlisteds = get_unlisteds_from_list(youtube, known_video_ids)
     print(len(unlisteds))
-    with open('dataDiffsUnlisted.json', 'w') as outfile:
+    with open('dDiffsUnlisted.json', 'w') as outfile:
         json.dump(unlisteds, outfile)
 
 
