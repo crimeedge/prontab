@@ -192,7 +192,7 @@ if __name__ == "__main__":
     video_ids = json.load(open('dDiffs.json','r'))
     # video_ids.extend(get_ids_from_hvids_filename('dHvidsLinks.txt'))
     if len(sys.argv)>=3:
-        unknown_video_ids = video_ids[sys.argv[2]:sys.argv[3]]
+        unknown_video_ids = video_ids[int(sys.argv[2]):int(sys.argv[3])]
     else:
         unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
