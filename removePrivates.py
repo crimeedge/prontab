@@ -5,9 +5,9 @@ from googleapiclient.errors import HttpError
 from makeYoutube import get_authenticated_service, scope, get_api_service
 
 
-def get_playlist_ids_list(youtube,channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
+def get_playlist_ids_list(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
     request = youtube.playlists().list(
-        part="contentDetails",
+        part="id",
         maxResults=50,
         channelId=channel_id
     )
@@ -20,9 +20,40 @@ def get_playlist_ids_list(youtube,channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
     return ids
 
 
+def get_playlist_ids_count_dict(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
+    request = youtube.playlists().list(
+        part="id,contentDetails",
+        maxResults=50,
+        channelId=channel_id
+    )
+    ids_counts = dict()
+    while request:
+        response = request.execute()
+        for item in response['items']:
+            ids_counts[item['id']] = item['contentDetails']['itemCount']
+        request = youtube.playlistItems().list_next(request, response)
+
+    return ids_counts
+
+def get_playlist_id_count_dict(youtube, id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
+    request = youtube.playlists().list(
+        part="id,contentDetails",
+        maxResults=50,
+        id=id
+    )
+    ids_counts = dict()
+    while request:
+        response = request.execute()
+        for item in response['items']:
+            ids_counts[item['id']] = item['contentDetails']['itemCount']
+        request = youtube.playlistItems().list_next(request, response)
+
+    return ids_counts
+
+
 def get_playlist_items_from_id(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
     request = youtube.playlistItems().list(
-        part="snippet,contentDetails",
+        part="snippet",
         maxResults=50,
         playlistId=playlist_id
     )
@@ -45,7 +76,7 @@ def filter_private_playlist_items(items, get_privates=True):
 
 
 def filter_private_playlist_item_ids(items, get_privates=True):
-    return get_id_from_items(filter_private_playlist_items(items,get_privates))
+    return get_id_from_items(filter_private_playlist_items(items, get_privates))
 
 
 def get_id_from_items(items):
@@ -91,8 +122,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    # youtube = get_api_service()
-    # listy = get_playlist_ids_list(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
-    # print (listy)
-    # print (len(listy))
+    # main()
+    youtube = get_api_service()
+    listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
+    print(listy)
+    print(len(listy))

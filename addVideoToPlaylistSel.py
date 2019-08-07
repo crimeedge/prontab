@@ -178,25 +178,15 @@ def get_ids_from_playlist_ids(youtube, playlist_ids):
 if __name__ == "__main__":
     mgs = time.time()
     reg = MetricsRegistry()
-    poopzero_playlist_ids = ['PL2kd2UTW2Wj0_cnXFH32Du6Kq134OyizE', 'LLhNOMudRAcLnj6hlCLjLk9A',
-                    'PLNeEoLOIXNK8CyIwilnEGha-KUmAiPeHd', 'PLDKY4GcNvgfp8ckYxLmYv8mrD4LHR4Wjh']
 
     known_video_ids = []
-    known_video_ids.extend(json.load(open('dMyKnown.json', 'r')))
+    known_video_ids.extend(json.load(open('dMyKnown.json', 'r'))['video_ids'])
     known_video_ids.extend(json.load(open('dBroken.json', 'r')))
-    # known_video_ids = json.load(open('dataTempUnlisted.json', 'r'))
 
     youtube = get_api_service()
-    # video_ids = json.load(open('dataDiffsUnlisted.json','r'))
     video_ids = json.load(open('dDiffs.json','r'))
-    # video_ids.extend(get_ids_from_playlist_ids(youtube,poopzero_playlist_ids))
     # video_ids.extend(get_ids_from_hvids_filename('dHvidsLinks.txt'))
-
-    # known_video_ids = get_video_ids(
-    #         filter_private_playlist_items(get_playlist_items_from_id(youtube, "PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G"), False))
-    # video_ids = json.load(open('dMyUnlisted.json', 'r'))
-    # unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
-    unknown_video_ids = json.load(open('dNonDelDiffs.json', 'r'))
+    unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
     i = 0
     NUM_DRIVERS = int(sys.argv[1])
