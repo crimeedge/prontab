@@ -118,6 +118,12 @@ def store_differences_to_json():
         json.dump(list(diffs), outfile)
 
 
+def print_differences_of_unlisted():
+    diffs = set(json.load(open('dMyUnlisted.json', 'r'))).difference(set(json.load(open('dataTempUnlisted.json', 'r'))))
+    print(len(diffs))
+    print(diffs)
+
+
 def combine_brokens():
     union = set(json.load(open('dBroken.json', 'r'))).union(set(json.load(open('dBrokenMac.json', 'r'))))
     print(len(union))
@@ -136,7 +142,7 @@ def temp_unlisted():
         known_video_ids.extend(get_video_ids(items))
     known_video_ids = list(set(known_video_ids))
     print(len(known_video_ids))
-    print(get_unlisteds_from_list(youtube, known_video_ids, True))
+    print(get_unlisteds_from_list(youtube, known_video_ids, False))
     with open('dataTempUnlisted.json', 'w') as outfile:
         json.dump(known_video_ids, outfile)
 
@@ -161,10 +167,11 @@ def filter_non_deleteds(youtube, ids: List[str]):
 
 
 if __name__ == "__main__":
+    # combine_brokens()
     my_youtube_ids_to_json()
     other_youtube_ids_to_json()
     store_differences_to_json()
     # temp_unlisted()
-    # combine_brokens()
+    # print_differences_of_unlisted()
     # check_existing()
     # print(len(get_playlist_items_from_liked_id(get_api_service())))
