@@ -157,12 +157,17 @@ def add_vids(vid_sublist):
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR,
                  ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+            time.sleep(0.5)
             reg.histogram("succ_add").add(time.time() - ms)
             print(reg.dump_metrics())
         except TimeoutException as ex:
             print(ex)
             print("https://www.youtube.com/watch?v=" + vid + " machine broke")
             broken_vids.append(vid)
+            try:
+                reg.counter("broken").inc()
+            except:
+                print("reg machine broke!!!")
     return broken_vids
 
 
@@ -186,7 +191,10 @@ if __name__ == "__main__":
     youtube = get_api_service()
     video_ids = json.load(open('dDiffs.json','r'))
     # video_ids.extend(get_ids_from_hvids_filename('dHvidsLinks.txt'))
-    unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
+    if len(sys.argv)>=3:
+        unknown_video_ids = video_ids[sys.argv[2]:sys.argv[3]]
+    else:
+        unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
     split_uvi = []
     i = 0
     NUM_DRIVERS = int(sys.argv[1])

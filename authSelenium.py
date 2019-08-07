@@ -1,9 +1,11 @@
+import sys
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
 def auth_selenium():
+    print(sys.argv)
     chrome_options = Options()
     chrome_options.add_argument('--always-authorized-plugins=true')
     chrome_options.add_argument("--disable-infobars")
@@ -12,7 +14,7 @@ def auth_selenium():
     chrome_options.add_argument("user-data-dir=chrome-data")
     driver = webdriver.Chrome(options=chrome_options)
     driver.get('https://youtube.com')
-    time.sleep(15)  # Time to enter credentials
+    time.sleep(30)  # Time to enter credentials
     driver.quit()
 
 

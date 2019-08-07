@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import List
 
 from googleapiclient.errors import HttpError
 
@@ -35,11 +36,13 @@ def get_playlist_ids_count_dict(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
 
     return ids_counts
 
-def get_playlist_id_count_dict(youtube, id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
+
+def get_playlist_ids_count_dict_from_list(youtube, ids: List[str]):
+    ids_str = ','.join(ids)
     request = youtube.playlists().list(
         part="id,contentDetails",
         maxResults=50,
-        id=id
+        id=ids_str
     )
     ids_counts = dict()
     while request:

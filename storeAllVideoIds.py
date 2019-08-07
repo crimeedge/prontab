@@ -6,7 +6,7 @@ import dateutil.parser
 
 from getUnlisted import get_unlisteds_from_list, get_statuses_from_video_ids
 from removePrivates import get_playlist_ids_list, get_playlist_items_from_id, get_video_ids, \
-    filter_private_playlist_items, get_playlist_ids_count_dict
+    filter_private_playlist_items, get_playlist_ids_count_dict, get_playlist_ids_count_dict_from_list
 from makeYoutube import get_authenticated_service, get_api_service
 
 import json
@@ -43,9 +43,10 @@ def other_youtube_ids_to_json():
     # cached_dict = defaultdict(lambda:-1,dict())
     # cached_dict['LLhNOMudRAcLnj6hlCLjLk9A']="2019-08-01"
     # cached_dict['LLzjiyMpyPuHnQyVFp9Nimbg'] = "2019-08-01"
-    # known_video_ids = json.load(open('dH0Poop.json', 'r'))
-    cached_dict = defaultdict(lambda: -1, json.load(open('dH0Poop.json', 'r')))
+    # known_video_ids = json.load(open('dH0PoopVsh.json', 'r'))
+    cached_dict = defaultdict(lambda: -1, json.load(open('dH0PoopVsh.json', 'r')))
     known_video_ids = cached_dict['video_ids']
+
     # h0 liked, poop liked
     liked_playlist_ids = ['LLhNOMudRAcLnj6hlCLjLk9A', 'LLzjiyMpyPuHnQyVFp9Nimbg']
     liked_playlist_ids_dict = dict()
@@ -63,10 +64,15 @@ def other_youtube_ids_to_json():
     # poop channel
     playlist_ids_dict.update(get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg'))
 
+    # vsh
+    free_playlist_ids = ['FLt5AE3F1yzn2IsASa55-c3Q', 'PL4X95Lb2XkAG3zaVxwgu2A-3s46n8hsIG']
+    playlist_ids_dict.update(get_playlist_ids_count_dict_from_list(youtube,free_playlist_ids))
+
     for playlist_id in playlist_ids_dict:
         if playlist_ids_dict[playlist_id]>cached_dict[playlist_id]:
             print(playlist_id)
             items = filter_private_playlist_items(get_playlist_items_from_id(youtube, playlist_id),False)
+            print(len(items))
             known_video_ids.extend(get_video_ids(items))
 
     known_video_ids = list(set(known_video_ids))
@@ -75,7 +81,7 @@ def other_youtube_ids_to_json():
     playlist_ids_dict.update(liked_playlist_ids_dict)
 
     # PrettyPrinter().pprint(playlist_ids_dict)
-    with open('dH0Poop.json', 'w') as outfile:
+    with open('dH0PoopVsh.json', 'w') as outfile:
         json.dump(playlist_ids_dict, outfile)
 
 
@@ -105,7 +111,7 @@ def get_playlist_items_from_liked_id(youtube, playlist_id="LLzjiyMpyPuHnQyVFp9Ni
 
 
 def store_differences_to_json():
-    diffs = set(json.load(open('dH0Poop.json', 'r'))['video_ids']).difference(set(json.load(open('dMyKnown.json', 'r'))['video_ids']))
+    diffs = set(json.load(open('dH0PoopVsh.json', 'r'))['video_ids']).difference(set(json.load(open('dMyKnown.json', 'r'))['video_ids']))
     diffs = diffs.difference(set(json.load(open('dBroken.json', 'r'))))
     print(len(diffs))
     with open('dDiffs.json', 'w') as outfile:
@@ -155,8 +161,8 @@ def filter_non_deleteds(youtube, ids: List[str]):
 
 
 if __name__ == "__main__":
-    # my_youtube_ids_to_json()
-    # other_youtube_ids_to_json()
+    my_youtube_ids_to_json()
+    other_youtube_ids_to_json()
     store_differences_to_json()
     # temp_unlisted()
     # combine_brokens()
