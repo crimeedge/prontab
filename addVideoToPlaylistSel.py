@@ -154,9 +154,12 @@ def add_vids(vid_sublist):
         try:
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
-            WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
+            i=25
+            play_name=WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR,
-                 ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
+                 ".style-scope:nth-child("+str(i)+") > #checkbox > #checkboxLabel > #checkbox-container #label")))
+            play_name.click()
+            print(play_name.text)
             time.sleep(0.5)
             reg.histogram("succ_add").add(time.time() - ms)
             print(reg.dump_metrics())
@@ -179,19 +182,19 @@ def get_ids_from_playlist_ids(youtube, playlist_ids):
         ret_video_ids.extend(curr_video_ids)
     return ret_video_ids
 
+mgs = time.time()
+reg = MetricsRegistry()
 
-if __name__ == "__main__":
-    mgs = time.time()
-    reg = MetricsRegistry()
+def sel_add_by_diffs():
 
     known_video_ids = []
     known_video_ids.extend(json.load(open('dMyKnown.json', 'r'))['video_ids'])
     known_video_ids.extend(json.load(open('dBroken.json', 'r')))
 
     youtube = get_api_service()
-    video_ids = json.load(open('dDiffs.json','r'))
+    video_ids = json.load(open('dDiffs.json', 'r'))
     # video_ids.extend(get_ids_from_hvids_filename('dHvidsLinks.txt'))
-    if len(sys.argv)>=3:
+    if len(sys.argv) >= 3:
         unknown_video_ids = video_ids[int(sys.argv[2]):int(sys.argv[3])]
     else:
         unknown_video_ids = list(set(video_ids).difference(set(known_video_ids)))
@@ -222,3 +225,7 @@ if __name__ == "__main__":
     reg.histogram("total").add(time.time() - mgs)
     print(reg.dump_metrics())
     print("done")
+
+
+if __name__ == "__main__":
+    add_vids(['-s4jVUkQ8h4'])

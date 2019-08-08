@@ -1,5 +1,7 @@
 import re
 
+from driverMethods import create_driver
+
 video_id_prog = re.compile(r'v=([^&]+)')
 youtube_prog = re.compile(r'youtube\.com')
 be_prog = re.compile(r'youtu.be/(\S+)$')
@@ -22,6 +24,14 @@ def get_ids_from_hvids_filename(filename):
     print(len(ids))
     return ids
 
+def get_hvids_by_sel():
+    driver=create_driver()
+    driver.get('https://www.hvids.net/viewforum.php?f=23&start=100')
+    hvids_list=driver.execute_script(open('simplePPB.js').read())
+    # hvids_list=driver.execute_script()
+    print(hvids_list)
+
 
 if __name__ == '__main__':
-    get_ids_from_hvids_filename('dHvidsLinks.txt')
+    # get_ids_from_hvids_filename('dHvidsLinks.txt')
+    get_hvids_by_sel()
