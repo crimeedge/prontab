@@ -1,6 +1,6 @@
 /* GetphpBB URLs Version 1.0 */
 /* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"https%3A%2F%2Fhairvids.ng-bvg.de%2Fvideos%2Fscripts%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
-/* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"file%3A%2F%2F%2FUsers%2Ftarn%2Fgit%2Fntarn%2Fprontab%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
+/* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"https%3A%2F%2Fraw.githubusercontent.com%2Fcrimeedge%2Fprontab%2Fmaster%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
 
 function GetphpBBUrlsSetup(){
 
