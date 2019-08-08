@@ -14,7 +14,7 @@ def auth_selenium():
     chrome_options.add_argument("user-data-dir=chrome-data")
     driver = webdriver.Chrome(options=chrome_options)
     driver.get('https://youtube.com')
-    time.sleep(30)  # Time to enter credentials
+    time.sleep(60)  # Time to enter credentials
     driver.quit()
 
 

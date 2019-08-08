@@ -1,6 +1,6 @@
 /* GetphpBB URLs Version 1.0 */
 /* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"https%3A%2F%2Fhairvids.ng-bvg.de%2Fvideos%2Fscripts%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
-/* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"https%3A%2F%2Fraw.githubusercontent.com%2Fcrimeedge%2Fprontab%2Fmaster%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
+/* javascript:(function()%7Bfunction callback()%7BGetphpBBUrlsSetup()%7Dvar s%3Ddocument.createElement("script")%3Bs.src%3D"https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fcrimeedge%2Fprontab%2FgetPPBUrls.js"%3Bif(s.addEventListener)%7Bs.addEventListener("load"%2Ccallback%2Cfalse)%7Delse if(s.readyState)%7Bs.onreadystatechange%3Dcallback%7Ddocument.body.appendChild(s)%3B%7D)() */
 
 function GetphpBBUrlsSetup(){
 
@@ -16,17 +16,17 @@ function GetphpBBUrlsSetup(){
 
 	let elUnreadCBlb = document.createElement("label");
 	elUnreadCBlb.setAttribute("for","GetphpBBUrls-unread");
-	elUnreadCBlb.innerText = " Only unread Posts?"
+	elUnreadCBlb.innerText = " Only unread Posts?";
 
 
 	let elFirstPostCB = document.createElement("input");
 	elFirstPostCB.setAttribute("type","checkbox");
-	elFirstPostCB.setAttribute("checked","checked");
 	elFirstPostCB.setAttribute("id","GetphpBBUrls-firstContent");
 
 	let elFirstPostCBlb = document.createElement("label");
 	elFirstPostCBlb.setAttribute("for","GetphpBBUrls-firstContent");
-	elFirstPostCBlb.innerText = " Only first Post in Thread"
+	elFirstPostCBlb.setAttribute("checked","checked");
+	elFirstPostCBlb.innerText = " Only first Post in Thread";
 
 
 	let elThanksCB = document.createElement("input");
@@ -35,7 +35,7 @@ function GetphpBBUrlsSetup(){
 
 	let elThanksCBlb = document.createElement("label");
 	elThanksCBlb.setAttribute("for","GetphpBBUrls-thanks");
-	elThanksCBlb.innerText = " Thanking each Poster??!?!?!?!?!?"
+	elThanksCBlb.innerText = " Thanking?!?!?!";
 
 
 	let elGetphpBBUrlsBtn = document.createElement("button");
@@ -63,7 +63,7 @@ function GetphpBBUrlsSetup(){
 		elGetphpBBUrlsBtn.attachEvent('onclick', GetphpBBUrlsRun);
 	}
 
-};
+}
 function toggleDim(){
 	if (document.getElementById("GetphpBBUrls-overlay")) {
 		document.getElementById("GetphpBBUrls-overlay").remove();
@@ -96,7 +96,7 @@ function GetphpBBUrlsRun(){
 
 	posts.forEach(function(node){
 		let href = node.getAttribute("href");
-		let url = location.origin + href.slice(1)
+		let url = location.origin + href.slice(1);
 		var req = $.ajax( {method: "POST", url:url,async: false});
 		req.done(function(data) {
 			let topic = $.parseHTML(data);
@@ -122,7 +122,7 @@ function GetphpBBUrlsRun(){
 					if (id !== undefined) {
 						if (id.indexOf("lnk_thanks_") >= 0){
 							let href = $(this).attr( "href" );
-							let url = location.origin + href.slice(1)
+							let url = location.origin + href.slice(1);
 							$.ajax( {method: "POST", url:url,async: false});
 						}
 					}
@@ -139,9 +139,7 @@ function GetphpBBUrlsRun(){
 	header="##########################################\n# Urls in Posts of Page:\n# " + document.title + "\n# (" + document.baseURI + ")\n# Created at: " + dateTime + "\n# Links found: " + urls.length + "\n##########################################\n";
 	toggleDim();
 	GetphpBBUrlsDownload("urls from " + document.domain + " " + FileNamedateTime + ".txt",header + urls.join("\n"));
-};
-
-
+}
 function GetphpBBUrlsDownload(filename, text) {
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
