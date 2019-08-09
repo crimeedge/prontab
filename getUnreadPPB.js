@@ -23,4 +23,5 @@ let urls = [];
 			});
 		});
 	});
+// noinspection JSAnnotator
 return urls;
