@@ -148,7 +148,7 @@ def add_vids(vid_tuple_sublist):
     driver = create_driver(False)
     driver.maximize_window()
     login_to_youtube(driver)
-    num_playlists = get_playlist_ids_list(get_api_service())
+    num_playlists = len(get_playlist_ids_list(get_api_service()))
     broken_vids = []
     for vid_tuple in vid_tuple_sublist:
         ms = time.time()
@@ -162,7 +162,7 @@ def add_vids(vid_tuple_sublist):
                     (By.CSS_SELECTOR,
                      ".style-scope:nth-child(" + str(i) + ") > #checkbox > #checkboxLabel > #checkbox-container #label")))
 
-                if play_name.text==vid_tuple[1]:
+                if play_name.text == vid_tuple[1]:
                     break
 
             print(play_name.text)
@@ -254,7 +254,7 @@ def add_diffs():
             for _ in threader.map(add_vids, split_uvi):
                 broken_total.extend(_)
     except:
-        print("Unexpected threading error")
+        print(sys.exc_info()[0])
 
     broken_total = list(set(broken_total))
 
