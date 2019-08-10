@@ -1,6 +1,6 @@
 import json
 
-from addVideoToPlaylistSel import get_ids_from_playlist_ids
+from addVideoToPlaylistSel import get_ids_from_playlist_ids, add_diffs
 from removePrivates import get_video_ids
 from youtube.youtubeMake import get_api_service
 from youtube.youtubePlaylistItems import get_playlist_items_from_id
@@ -65,7 +65,8 @@ def print_differences_of_unlisted():
 
 
 if __name__ == "__main__":
-    # temp_api_unlisted()
-    # dump_unlisteds_from_known()
-    # dump_unlisteds_from_diffs()
+    temp_api_unlisted()
+    dump_unlisteds_from_known()
+    dump_unlisteds_from_diffs()
     print_differences_of_unlisted()
+    add_diffs('dUDiffs.json')

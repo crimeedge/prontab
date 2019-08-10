@@ -178,6 +178,7 @@ def add_vids(vid_tuple_sublist):
                 reg.counter("broken").inc()
             except:
                 print("reg machine broke!!!")
+    driver.quit()
     return broken_vids
 
 
@@ -208,7 +209,7 @@ def make_new_playlist(driver, name,
     WebDriverWait(driver, 10).until(ec.title_contains(name))
 
 
-def make_tuple_diffs():
+def make_tuple_diffs() -> int:
     known_video_ids = set()
     known_video_ids = known_video_ids.union(set((json.load(open('dMyKnown.json', 'r'))['video_ids'])))
     known_video_ids = known_video_ids.union(set(json.load(open('dBroken.json', 'r'))))
@@ -228,42 +229,46 @@ def make_tuple_diffs():
 
     print(unknown_ids_tuples)
     json.dump(unknown_ids_tuples, open('dDiffs.json', 'w'))
+    return len(unknown_ids_tuples)
 
 
 def add_diffs(diff_filename='dDiffs.json'):
     unknown_ids_tuples = json.load(open(diff_filename, 'r'))
+    if len(unknown_ids_tuples >= 1):
 
-    if len(sys.argv) >= 3:
-        all_process_tuples = unknown_ids_tuples[int(sys.argv[2]):int(sys.argv[3])]
-    else:
-        all_process_tuples = unknown_ids_tuples
-    split_uvi = []
-    i = 0
-    NUM_DRIVERS = int(sys.argv[1])
-    print(len(all_process_tuples))
-    while i < len(all_process_tuples):
-        j = min(i + len(all_process_tuples) // NUM_DRIVERS + 1, len(all_process_tuples))
-        split_uvi.append(all_process_tuples[i:j])
-        i = j
+        if len(sys.argv) >= 4:
+            all_process_tuples = unknown_ids_tuples[int(sys.argv[2]):int(sys.argv[3])]
+        else:
+            all_process_tuples = unknown_ids_tuples
+        split_uvi = []
+        i = 0
+        num_drivers = 1
+        if len(sys.argv) >= 2:
+            num_drivers = int(sys.argv[1])
+        print(len(all_process_tuples))
+        while i < len(all_process_tuples):
+            j = min(i + len(all_process_tuples) // num_drivers + 1, len(all_process_tuples))
+            split_uvi.append(all_process_tuples[i:j])
+            i = j
 
-    for split in split_uvi:
-        print(len(split))
+        for split in split_uvi:
+            print(len(split))
 
-    broken_total = json.load(open("dBroken.json", 'r'))
-    try:
-        with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
-            for _ in threader.map(add_vids, split_uvi):
-                broken_total.extend(_)
-    except:
-        print(sys.exc_info()[0])
+        broken_total = json.load(open("dBroken.json", 'r'))
+        try:
+            with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+                for _ in threader.map(add_vids, split_uvi):
+                    broken_total.extend(_)
+        except:
+            print(sys.exc_info()[0])
 
-    broken_total = list(set(broken_total))
+        broken_total = list(set(broken_total))
 
-    with open('dBroken.json', 'w') as outfile:
-        json.dump(broken_total, outfile)
-    reg.histogram("total").add(time.time() - mgs)
-    print(reg.dump_metrics())
-    print("done")
+        with open('dBroken.json', 'w') as outfile:
+            json.dump(broken_total, outfile)
+        reg.histogram("total").add(time.time() - mgs)
+        print(reg.dump_metrics())
+        print("done")
 
 
 if __name__ == "__main__":
@@ -272,6 +277,6 @@ if __name__ == "__main__":
     #                   'dVsh.json']
     # for jason in jsons_in_order:
     #     make_new_playlist(driver,jason)
-    make_tuple_diffs()
+    # make_tuple_diffs()
     add_diffs('dDiffs.json')
     # add_diffs('dUDiffs.json')

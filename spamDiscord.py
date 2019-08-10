@@ -9,13 +9,13 @@ from platform import system
 
 from driverMethods import create_driver, login_to_discord
 
-if __name__ == '__main__':
+def main(known_video_ids):
     driver = create_driver(False)
     login_to_discord(driver)
     time.sleep(3)
     driver.get('https://discordapp.com/channels/570509358677360650/570509358677360652')
     # known_video_ids = json.load(open('dMyAllUnlisted.json', 'r'))
-    known_video_ids= {'ULjrKkNQTwo', '29QiWxQynek', 'ofMhZvj0wyY'}
+    # known_video_ids = {'ULjrKkNQTwo', '29QiWxQynek', 'ofMhZvj0wyY'}
     paste_text = ""
     if system().lower() == 'darwin':
         for id in known_video_ids:
@@ -36,7 +36,8 @@ if __name__ == '__main__':
                 # raise ZeroDivisionError
                 pyperclip.copy(paste_text)
                 pasty = ActionChains(driver)
-                type_field = WebDriverWait(driver,20).until(ec.presence_of_element_located ((By.CSS_SELECTOR, ".textArea-2Spzkt")))
+                type_field = WebDriverWait(driver, 20).until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, ".textArea-2Spzkt")))
                 pasty.click(type_field)
                 # pasty.key_down(Keys.COMMAND)
                 # pasty.key_down('v')
@@ -47,4 +48,7 @@ if __name__ == '__main__':
                 pasty.perform()
                 paste_text = ("http://youtu.be/%s\n" % id)
 
+if __name__ == '__main__':
+    main(['Omrt9ahH728', 'QzhTHJCCKUw', 'rQWzxkscwLg', 'YxamLJHOV1k', 'oCxn7jig8Yk', 'FUP9wh07770', '0WWN4dISrPQ', 'BeaPZ64w7e8', 'qcBqhzG-4qA', 'AFmuYllEIF0', 'DpH_wZ_zwww', 'DKajmAvDOns', 'gL9G8IZSmdc', '17p0he_PhDs', 'nA_VgsZ6l1I']
+)
 

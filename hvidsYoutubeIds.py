@@ -3,7 +3,7 @@ import json
 from driverMethods import create_driver
 from youtube.youtubeMake import get_api_service
 from progs import video_id_prog, youtube_prog, be_prog
-from youtube.youtubeVideos import filter_privates_from_vid_list
+from youtube.youtubeVideos import filter_restricteds_from_vid_list
 
 
 def get_ids_from_hvids_filename(filename):
@@ -53,7 +53,7 @@ def get_hvids_by_sel(driver, hvids_url="https://www.hvids.net/viewforum.php?f=21
 
     new_video_ids = list(set(new_video_ids).difference(set(known_video_ids)))
     youtube = get_api_service()
-    known_video_ids.extend(filter_privates_from_vid_list(youtube, new_video_ids))
+    known_video_ids.extend(filter_restricteds_from_vid_list(youtube, new_video_ids))
 
     vdict = dict()
     vdict['video_ids'] = known_video_ids
