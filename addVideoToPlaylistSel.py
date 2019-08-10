@@ -230,8 +230,8 @@ def make_tuple_diffs():
     json.dump(unknown_ids_tuples, open('dDiffs.json', 'w'))
 
 
-def add_diffs():
-    unknown_ids_tuples = json.load(open('dDiffs.json', 'r'))
+def add_diffs(diff_filename='dDiffs.json'):
+    unknown_ids_tuples = json.load(open(diff_filename, 'r'))
 
     if len(sys.argv) >= 3:
         all_process_tuples = unknown_ids_tuples[int(sys.argv[2]):int(sys.argv[3])]
@@ -272,5 +272,6 @@ if __name__ == "__main__":
     #                   'dVsh.json']
     # for jason in jsons_in_order:
     #     make_new_playlist(driver,jason)
-    # make_tuple_diffs()
-    add_diffs()
+    make_tuple_diffs()
+    add_diffs('dDiffs.json')
+    # add_diffs('dUDiffs.json')
