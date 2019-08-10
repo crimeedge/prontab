@@ -6,7 +6,7 @@ import selenium.webdriver.support.expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 
-def create_driver(with_data=True):
+def create_driver(with_data: bool = True) -> webdriver.Chrome:
     chrome_options = Options()
     chrome_options.add_argument('--always-authorized-plugins=true')
     chrome_options.add_argument("--disable-infobars")
@@ -57,6 +57,13 @@ def login_to_discord(driver, creds=None):
                                                                                       '//*[@id="app-mount"]/div[1]/div/div[2]/div/form/div/div[3]/div[2]/div/input')))
     discord_pass.send_keys(creds[1] + '\n')
 
+
+def login_to_hvids(driver, creds=None):
+    if not creds:
+        file = open(".credsHvids", "r")
+        creds = file.read().splitlines()
+    driver.get('https://www.hvids.net/ucp.php?mode=login')
+    # TODO: automate hvids login
 
 if __name__ == '__main__':
     login_to_discord(create_driver(False))

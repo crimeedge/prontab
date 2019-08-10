@@ -1,50 +1,10 @@
 import json
-from typing import List
 
 from addVideoToPlaylistSel import get_ids_from_playlist_ids
-from makeYoutube import get_api_service
-
-
-def get_statuses_from_video_ids(youtube, ids: List[str]):
-    ids_str = ','.join(ids)
-    request = youtube.videos().list(
-        part="status",
-        id=ids_str
-    )
-    response = request.execute()
-
-    return response
-
-
-def get_unlisteds_from_list(youtube, ids: List[str],unlist_bool=True):
-    unlisteds = []
-    i = 0
-    while i < len(ids):
-        j = min(i + 50, len(ids))
-        for item in get_statuses_from_video_ids(youtube, ids[i:j])['items']:
-            if (item['status']['privacyStatus'] == 'unlisted')==unlist_bool:
-                unlisteds.append(item['id'])
-        i = j
-    return unlisteds
-
-
-def dump_unlisteds_from_known():
-    youtube = get_api_service()
-    known_file = 'dMyKnown.json'
-    known_video_ids = json.load(open(known_file, 'r'))['video_ids']
-    unlisteds = get_unlisteds_from_list(youtube, known_video_ids)
-    print(len(unlisteds))
-    with open('dMyUnlisted.json', 'w') as outfile:
-        json.dump(unlisteds, outfile)
-
-
-def dump_unlisteds_from_diffs():
-    youtube = get_api_service()
-    known_video_ids = json.load(open('dDiffs.json', 'r'))
-    unlisteds = get_unlisteds_from_list(youtube, known_video_ids)
-    print(len(unlisteds))
-    with open('dDiffsUnlisted.json', 'w') as outfile:
-        json.dump(unlisteds, outfile)
+from removePrivates import get_video_ids
+from youtube.youtubeMake import get_api_service
+from youtube.youtubePlaylistItems import get_playlist_items_from_id
+from youtube.youtubeVideos import get_unlisteds_from_list
 
 
 def clwi_unlisted_test():
@@ -58,7 +18,54 @@ def clwi_unlisted_test():
         json.dump(clwi_ulist, outfile)
 
 
+def temp_api_unlisted():
+    youtube = get_api_service()
+    playlist_ids = ['PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
+
+    known_video_ids = []
+
+    for playlist_id in playlist_ids:
+        items = get_playlist_items_from_id(youtube, playlist_id)
+        known_video_ids.extend(get_video_ids(items))
+    known_video_ids = list(set(known_video_ids))
+    print(len(known_video_ids))
+    # print(get_unlisteds_from_list(youtube, known_video_ids, False))
+    with open('dAPIUnlisted.json', 'w') as outfile:
+        json.dump(known_video_ids, outfile)
+
+
+def dump_unlisteds_from_known():
+    youtube = get_api_service()
+    known_video_ids = json.load(open('dMyKnown.json', 'r'))['video_ids']
+    unlisteds = get_unlisteds_from_list(youtube, known_video_ids)
+    print(len(unlisteds))
+    with open('dMyAllUnlisted.json', 'w') as outfile:
+        json.dump(unlisteds, outfile)
+
+
+def dump_unlisteds_from_diffs():
+    youtube = get_api_service()
+    known_video_ids = [tupl[0] for tupl in json.load(open('dDiffs.json', 'r'))]
+    unlisteds = get_unlisteds_from_list(youtube, known_video_ids)
+    print(len(unlisteds))
+    with open('dDiffsUnlisted.json', 'w') as outfile:
+        json.dump(unlisteds, outfile)
+
+
+def print_differences_of_unlisted():
+    diffs_unlisted=set(json.load(open('dDiffsUnlisted.json', 'r')))
+    my_all_unlisted=set(json.load(open('dMyAllUnlisted.json', 'r')))
+    combined_unlisted=diffs_unlisted.union(my_all_unlisted)
+    not_in_api_unlisted = combined_unlisted.difference(set(json.load(open('dAPIUnlisted.json', 'r'))))
+    u_diffs = [(niau,'APIUnlisted') for niau in not_in_api_unlisted]
+    print(len(u_diffs))
+    print(u_diffs)
+    with open('dUDiffs.json', 'w') as outfile:
+        json.dump(u_diffs, outfile)
+
+
 if __name__ == "__main__":
-    dump_unlisteds_from_known()
-    # clwi_unlisted_test()
-    dump_unlisteds_from_diffs()
+    # temp_api_unlisted()
+    # dump_unlisteds_from_known()
+    # dump_unlisteds_from_diffs()
+    print_differences_of_unlisted()

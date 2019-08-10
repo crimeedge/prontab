@@ -8,12 +8,12 @@ import json
 from selenium.common.exceptions import TimeoutException
 
 from driverMethods import create_driver, login_to_youtube
-from hvidsYoutubeIds import get_ids_from_hvids_filename
-from makeYoutube import get_api_service
-from removePrivates import get_video_ids, get_playlist_items_from_id, filter_private_playlist_items, \
-    get_playlist_ids_list
+from youtube.youtubeMake import get_api_service
+from removePrivates import get_video_ids, filter_private_playlist_items
+from youtube.youtubePlaylistItems import get_playlist_items_from_id
+from youtube.youtubePlaylists import get_playlist_ids_list
 
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from pyformance import MetricsRegistry
 
 import time
@@ -143,7 +143,6 @@ index_prog = re.compile(r'index=5\d\d\d')
 #              ".style-scope:nth-child(2) > #checkbox > #checkboxLabel > #checkbox-container #label"))).click()
 #         # break
 
-
 def add_vids(vid_tuple_sublist):
     driver = create_driver(False)
     driver.maximize_window()
@@ -157,16 +156,16 @@ def add_vids(vid_tuple_sublist):
             WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                 (By.CSS_SELECTOR, ".style-scope:nth-child(4) > .yt-simple-endpoint > #button"))).click()
 
-            for i in range(2,num_playlists+1):
+            for i in range(2, num_playlists + 1):
                 play_name = WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
                     (By.CSS_SELECTOR,
-                     ".style-scope:nth-child(" + str(i) + ") > #checkbox > #checkboxLabel > #checkbox-container #label")))
+                     ".style-scope:nth-child(" + str(
+                         i) + ") > #checkbox > #checkboxLabel > #checkbox-container #label")))
 
                 if play_name.text == vid_tuple[1]:
+                    print(play_name.text)
+                    play_name.click()
                     break
-
-            print(play_name.text)
-            play_name.click()
 
             time.sleep(0.5)
             reg.histogram("succ_add").add(time.time() - ms)
@@ -174,7 +173,7 @@ def add_vids(vid_tuple_sublist):
         except TimeoutException as ex:
             print(ex)
             print("https://www.youtube.com/watch?v=" + vid_tuple[0] + " machine broke")
-            broken_vids.append(vid_tuple)
+            broken_vids.append(vid_tuple[0])
             try:
                 reg.counter("broken").inc()
             except:
@@ -200,19 +199,21 @@ def make_new_playlist(driver, name,
     driver.get(url)
     WebDriverWait(driver, 10).until(ec.element_to_be_clickable(
         (By.CSS_SELECTOR, "#playlists-tab-create-playlist-widget > .yt-uix-button > .yt-uix-button-content"))).click()
-    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.XPATH, '//*[starts-with(@id,"kbd-nav")]'))).send_keys(name)
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.XPATH, '//*[starts-with(@id,"kbd-nav")]'))).send_keys(name)
     WebDriverWait(driver, 10).until(ec.element_to_be_clickable((By.CSS_SELECTOR,
                                                                 "#playlists-tab-create-playlist-dialog "
                                                                 ".yt-uix-button-primary > "
                                                                 ".yt-uix-button-content"))).click()
-    WebDriverWait(driver,10).until(ec.title_contains(name))
+    WebDriverWait(driver, 10).until(ec.title_contains(name))
 
 
 def make_tuple_diffs():
     known_video_ids = set()
-    known_video_ids=known_video_ids.union(set((json.load(open('dMyKnown.json', 'r'))['video_ids'])))
-    known_video_ids=known_video_ids.union(set(json.load(open('dBroken.json', 'r'))))
-    jsons_in_order = ['dHvidsMakeover.json','dPoop.json','dH0.json','dHvidsBuzzcut.json','dHvidsCharity.json','dVsh.json']
+    known_video_ids = known_video_ids.union(set((json.load(open('dMyKnown.json', 'r'))['video_ids'])))
+    known_video_ids = known_video_ids.union(set(json.load(open('dBroken.json', 'r'))))
+    jsons_in_order = ['dHvidsMakeover.json', 'dPoop.json', 'dH0.json', 'dHvidsBuzzcut.json', 'dHvidsCharity.json',
+                      'dVsh.json']
 
     unknown_ids_tuples = []
     for jason in jsons_in_order:
@@ -220,17 +221,17 @@ def make_tuple_diffs():
         print(len(jason_ids))
         news_ids = set(jason_ids).difference(known_video_ids)
         print(len(news_ids))
-        unknown_ids_tuples.extend((news_id,jason) for news_id in news_ids)
+        unknown_ids_tuples.extend((news_id, jason) for news_id in news_ids)
         print(len(unknown_ids_tuples))
-        known_video_ids=known_video_ids.union(set(jason_ids))
+        known_video_ids = known_video_ids.union(set(jason_ids))
         print(len(known_video_ids))
 
     print(unknown_ids_tuples)
-    json.dump(unknown_ids_tuples,open('dDiffs.json','w'))
+    json.dump(unknown_ids_tuples, open('dDiffs.json', 'w'))
 
 
 def add_diffs():
-    unknown_ids_tuples = json.load(open('dDiffs.json','r'))
+    unknown_ids_tuples = json.load(open('dDiffs.json', 'r'))
 
     if len(sys.argv) >= 3:
         all_process_tuples = unknown_ids_tuples[int(sys.argv[2]):int(sys.argv[3])]

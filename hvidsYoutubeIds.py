@@ -1,14 +1,9 @@
 import json
-import re
-from typing import List
 
 from driverMethods import create_driver
-from makeYoutube import get_api_service
-
-video_id_prog = re.compile(r'v=([^&,]+)')
-youtube_prog = re.compile(r'youtube\.com')
-be_prog = re.compile(r'youtu.be/([^\?,%#]+)')
-# be_prog = re.compile(r'youtu.be/(\S+)$')
+from youtube.youtubeMake import get_api_service
+from progs import video_id_prog, youtube_prog, be_prog
+from youtube.youtubeVideos import filter_privates_from_vid_list
 
 
 def get_ids_from_hvids_filename(filename):
@@ -37,30 +32,6 @@ def parse_ids_from_list(sublist):
     return ids
 
 
-def get_id_from_video_ids(youtube, ids: List[str]):
-    ids_str = ','.join(ids)
-    request = youtube.videos().list(
-        part="id",
-        id=ids_str
-    )
-    response = request.execute()
-
-    return response
-
-
-def filter_privates_from_vid_list(youtube, ids: List[str]):
-    print(len(ids))
-    filtereds = []
-    i = 0
-    while i < len(ids):
-        j = min(i + 50, len(ids))
-        for item in get_id_from_video_ids(youtube, ids[i:j])['items']:
-            filtereds.append(item['id'])
-        i = j
-    print(len(filtereds))
-    return filtereds
-
-
 def get_hvids_by_sel(driver, hvids_url="https://www.hvids.net/viewforum.php?f=21&start=",
                      filename="dHvidsMakeover.json"):
     try:
@@ -82,7 +53,7 @@ def get_hvids_by_sel(driver, hvids_url="https://www.hvids.net/viewforum.php?f=21
 
     new_video_ids = list(set(new_video_ids).difference(set(known_video_ids)))
     youtube = get_api_service()
-    known_video_ids.extend(filter_privates_from_vid_list(youtube,new_video_ids))
+    known_video_ids.extend(filter_privates_from_vid_list(youtube, new_video_ids))
 
     vdict = dict()
     vdict['video_ids'] = known_video_ids
@@ -92,4 +63,6 @@ def get_hvids_by_sel(driver, hvids_url="https://www.hvids.net/viewforum.php?f=21
 if __name__ == '__main__':
     driver = create_driver()
     get_hvids_by_sel(driver,"https://www.hvids.net/viewforum.php?f=21&start=","dHvidsMakeover.json")
+    get_hvids_by_sel(driver,'https://www.hvids.net/viewforum.php?f=19&start=',"dHvidsBuzzcut.json")
+    get_hvids_by_sel(driver,"https://www.hvids.net/viewforum.php?f=39&start=","dHvidsCharity.json")
     driver.quit()

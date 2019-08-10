@@ -1,33 +1,10 @@
-from makeYoutube import get_authenticated_service
-import re
+from youtube.youtubeComments import get_comment_id
+from youtube.youtubeMake import get_authenticated_service
 
-video_id_prog = re.compile(r'v=([^&]+)')
+from youtube.youtubeAuth import remove_comment
+from progs import video_id_prog
+
 scope = ["https://www.googleapis.com/auth/youtube.force-ssl"]
-
-
-def get_comment_id(youtube, video_id, comment_author="Undesirable Truism"):
-    request = youtube.commentThreads().list(
-        part="snippet",
-        searchTerms=comment_author,
-        videoId=video_id
-    )
-    response = request.execute()
-    # print (response)
-    ids = []
-    for item in response['items']:
-        # print (item['snippet']['topLevelComment']['snippet']['authorDisplayName'])
-        if item['snippet']['topLevelComment']['snippet']['authorDisplayName'] == comment_author:
-            ids.append(item['id'])
-
-    return ids
-
-
-def remove_comment(youtube, id):
-    request = youtube.comments().delete(
-        id=id
-    )
-    request.execute()
-    print('comment ' + id + ' deleted')
 
 
 def main():

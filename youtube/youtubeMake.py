@@ -9,20 +9,21 @@ from selenium.webdriver.support.wait import WebDriverWait
 from driverMethods import create_driver
 
 
-def get_api_service():
+def get_api_service(key=None):
     api_service_name = "youtube"
     api_version = "v3"
-    key = open('.creds').readlines()[0].strip()
+    if not key:
+        key = open('.credsAPIKey').readlines()[0].strip()
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey=key)
     return youtube
 
 
-scope = ["https://www.googleapis.com/auth/youtube"]
+default_scope = ["https://www.googleapis.com/auth/youtube"]
 
 
-def get_authenticated_service(scopes=scope):
+def get_authenticated_service(scopes=default_scope):
     api_service_name = "youtube"
     api_version = "v3"
     client_secrets_file = "o.json"
@@ -30,13 +31,13 @@ def get_authenticated_service(scopes=scope):
     # Get credentials and create an API client
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
         client_secrets_file, scopes)
-    credentials = run_selenium(flow)
+    credentials = _run_selenium(flow)
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, credentials=credentials)
     return youtube
 
 
-def run_selenium(flow, **kwargs):
+def _run_selenium(flow, **kwargs):
     kwargs.setdefault('prompt', 'consent')
 
     flow.redirect_uri = flow._OOB_REDIRECT_URI
@@ -61,7 +62,6 @@ def run_selenium(flow, **kwargs):
                                         '/ span / section / div / span / div / div / div / textarea '
                                         ))).text
     driver.quit()
-    # code = input(authorization_code_message)
 
     flow.fetch_token(code=code)
 

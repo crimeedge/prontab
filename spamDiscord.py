@@ -14,7 +14,7 @@ if __name__ == '__main__':
     login_to_discord(driver)
     time.sleep(3)
     driver.get('https://discordapp.com/channels/570509358677360650/570509358677360652')
-    # known_video_ids = json.load(open('dMyUnlisted.json', 'r'))
+    # known_video_ids = json.load(open('dMyAllUnlisted.json', 'r'))
     known_video_ids= {'ULjrKkNQTwo', '29QiWxQynek', 'ofMhZvj0wyY'}
     paste_text = ""
     if system().lower() == 'darwin':

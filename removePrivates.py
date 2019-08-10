@@ -1,72 +1,11 @@
 # -*- coding: utf-8 -*-
-from typing import List
 
 from googleapiclient.errors import HttpError
 
-from makeYoutube import get_authenticated_service, scope, get_api_service
-
-
-def get_playlist_ids_list(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
-    request = youtube.playlists().list(
-        part="id",
-        maxResults=50,
-        channelId=channel_id
-    )
-    ids = []
-    while request:
-        response = request.execute()
-        ids.extend([item['id'] for item in response['items']])
-        request = youtube.playlistItems().list_next(request, response)
-
-    return ids
-
-
-def get_playlist_ids_count_dict(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
-    request = youtube.playlists().list(
-        part="id,contentDetails",
-        maxResults=50,
-        channelId=channel_id
-    )
-    ids_counts = dict()
-    while request:
-        response = request.execute()
-        for item in response['items']:
-            ids_counts[item['id']] = item['contentDetails']['itemCount']
-        request = youtube.playlistItems().list_next(request, response)
-
-    return ids_counts
-
-
-def get_playlist_ids_count_dict_from_list(youtube, ids: List[str]):
-    ids_str = ','.join(ids)
-    request = youtube.playlists().list(
-        part="id,contentDetails",
-        maxResults=50,
-        id=ids_str
-    )
-    ids_counts = dict()
-    while request:
-        response = request.execute()
-        for item in response['items']:
-            ids_counts[item['id']] = item['contentDetails']['itemCount']
-        request = youtube.playlistItems().list_next(request, response)
-
-    return ids_counts
-
-
-def get_playlist_items_from_id(youtube, playlist_id="PLXoAM842ovaC5y2JmwjqNf9M4cosmGO12"):
-    request = youtube.playlistItems().list(
-        part="snippet",
-        maxResults=50,
-        playlistId=playlist_id
-    )
-    items = []
-    while request:
-        response = request.execute()
-        items += response["items"]
-        request = youtube.playlistItems().list_next(request, response)
-
-    return items
+from youtube.youtubeMake import get_authenticated_service, default_scope
+from youtube.youtubeAuth import delete_by_playlist_item_id
+from youtube.youtubePlaylistItems import get_playlist_items_from_id
+from youtube.youtubePlaylists import get_playlist_ids_list
 
 
 def filter_private_playlist_items(items, get_privates=True):
@@ -94,21 +33,12 @@ def get_video_ids(items):
     return video_ids
 
 
-def delete_by_playlist_item_id(youtube, playlist_item_id):
-    print("del33ting playlistItem %s", playlist_item_id)
-    request = youtube.playlistItems().delete(
-        id=playlist_item_id
-    )
-    response = request.execute()
-    return response
-
-
 def main():
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
     # os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-    youtube = get_authenticated_service(scope)
+    youtube = get_authenticated_service(default_scope)
     playlist_ids = get_playlist_ids_list(youtube)
     count = 0
     for playlist_id in playlist_ids:
@@ -125,8 +55,8 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    youtube = get_api_service()
-    listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
-    print(listy)
-    print(len(listy))
+    main()
+    # youtube = get_api_service()
+    # listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
+    # print(listy)
+    # print(len(listy))
