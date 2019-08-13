@@ -1,12 +1,15 @@
 from addVideoToPlaylistSel import make_tuple_diffs, add_diffs
 from driverMethods import create_driver
 from hvidsYoutubeIds import get_hvids_by_sel
+from spamDiscord import spam_discord
 from storeAllVideoIds import my_youtube_ids_to_json, other_youtube_ids_to_json
 from youtube.youtubeMake import get_api_service
+import json
 
 
 def main():
-    while True:
+    runs = 5
+    for i in range(runs):
         my_youtube_ids_to_json()
         y = get_api_service()
         # poop
@@ -25,6 +28,10 @@ def main():
 
         if make_tuple_diffs() <= 0:
             break
+        if i == 0:
+            unknown_ids_tuples = json.load(open('dDiffs.json', 'r'))
+            unknown_ids = [tupl[0] for tupl in unknown_ids_tuples]
+            spam_discord(unknown_ids, 'https://discordapp.com/channels/464754024802025487/466070782439718922')
         add_diffs('dDiffs.json')
 
 

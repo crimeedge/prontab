@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
@@ -56,6 +58,7 @@ def login_to_discord(driver, creds=None):
     discord_pass = WebDriverWait(driver, 200).until(ec.visibility_of_element_located((By.XPATH,
                                                                                       '//*[@id="app-mount"]/div[1]/div/div[2]/div/form/div/div[3]/div[2]/div/input')))
     discord_pass.send_keys(creds[1] + '\n')
+    WebDriverWait(driver, 20).until(lambda x: driver.current_url != 'http://discordapp.com/login')
 
 
 def login_to_hvids(driver, creds=None):
@@ -63,7 +66,11 @@ def login_to_hvids(driver, creds=None):
         file = open(".credsHvids", "r")
         creds = file.read().splitlines()
     driver.get('https://www.hvids.net/ucp.php?mode=login')
-    # TODO: automate hvids login
+    username = WebDriverWait(driver,200).until(ec.presence_of_element_located((By.XPATH,'//*[@id="username"]')))
+    username.send_keys(creds[0])
+    pw = WebDriverWait(driver, 200).until(ec.presence_of_element_located((By.XPATH, '//*[@id="password"]')))
+    pw.send_keys(creds[1] + '\n')
+    WebDriverWait(driver, 20).until(lambda x: driver.current_url != 'https://www.hvids.net/ucp.php?mode=login')
 
 if __name__ == '__main__':
-    login_to_discord(create_driver(False))
+    login_to_hvids(create_driver(False))
