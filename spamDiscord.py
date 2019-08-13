@@ -50,6 +50,7 @@ def spam_discord(known_video_ids, url='https://discordapp.com/channels/570509358
         discord_wipe(driver)
     elif system().lower() == 'windows':
         i = 0
+        discord_wipe(driver)
         for video_id in known_video_ids:
             # TODO: fix length to 5, test on windows
             # if len(paste_text) < 100:
@@ -70,8 +71,8 @@ def spam_discord(known_video_ids, url='https://discordapp.com/channels/570509358
                 paste_text = ""
 
             paste_text += ("http://youtu.be/%s\n" % video_id)
-
             i += 1
+
         pyperclip.copy(paste_text)
         pasty = ActionChains(driver)
         # pasty.click(type_field)
