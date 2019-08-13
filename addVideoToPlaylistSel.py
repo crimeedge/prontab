@@ -234,7 +234,7 @@ def make_tuple_diffs() -> int:
 
 def add_diffs(diff_filename='dDiffs.json'):
     unknown_ids_tuples = json.load(open(diff_filename, 'r'))
-    if len(unknown_ids_tuples >= 1):
+    if len(unknown_ids_tuples) >= 1:
 
         if len(sys.argv) >= 4:
             all_process_tuples = unknown_ids_tuples[int(sys.argv[2]):int(sys.argv[3])]
