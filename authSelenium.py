@@ -19,4 +19,4 @@ def auth_selenium(url='https://youtube.com'):
 
 
 if __name__ == '__main__':
-    auth_selenium("https://hvids.net")
+    auth_selenium("https://discordapp.com")

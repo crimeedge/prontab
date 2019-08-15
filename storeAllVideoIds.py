@@ -36,13 +36,13 @@ def my_youtube_ids_to_json():
             print(playlist_id)
             need_updates.append(playlist_id)
 
-            # known_video_ids.extend(_video_ids_from_playlist_ids(youtube, playlist_id))
+            known_video_ids.extend(_video_ids_from_playlist_ids(youtube, playlist_id))
 
-    needs = len(need_updates)
-    if needs > 0:
-        with ThreadPoolExecutor(max_workers=needs) as threader:
-            for _ in threader.map(_video_ids_from_playlist_ids, [youtube] * needs, need_updates):
-                known_video_ids.extend(_)
+    # needs = len(need_updates)
+    # if needs > 0:
+    #     with ThreadPoolExecutor(max_workers=needs) as threader:
+    #         for _ in threader.map(_video_ids_from_playlist_ids, [youtube] * needs, need_updates):
+    #             known_video_ids.extend(_)
 
     known_video_ids = list(set(known_video_ids))
     print(len(known_video_ids))

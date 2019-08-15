@@ -42,6 +42,7 @@ def login_to_youtube(driver, creds=None):
     youtube_pass.send_keys(creds[1] + '\n')
 
     WebDriverWait(driver, 200).until(lambda x: x.find_element_by_xpath('//*[@id="search"]'))
+    return driver
 
 
 def login_to_discord(driver, creds=None):
@@ -59,6 +60,7 @@ def login_to_discord(driver, creds=None):
                                                                                       '//*[@id="app-mount"]/div[1]/div/div[2]/div/form/div/div[3]/div[2]/div/input')))
     discord_pass.send_keys(creds[1] + '\n')
     WebDriverWait(driver, 20).until(lambda x: driver.current_url != 'http://discordapp.com/login')
+    return driver
 
 
 def login_to_hvids(driver, creds=None):
@@ -66,11 +68,13 @@ def login_to_hvids(driver, creds=None):
         file = open(".credsHvids", "r")
         creds = file.read().splitlines()
     driver.get('https://www.hvids.net/ucp.php?mode=login')
-    username = WebDriverWait(driver,200).until(ec.presence_of_element_located((By.XPATH,'//*[@id="username"]')))
+    username = WebDriverWait(driver, 200).until(ec.presence_of_element_located((By.XPATH, '//*[@id="username"]')))
     username.send_keys(creds[0])
     pw = WebDriverWait(driver, 200).until(ec.presence_of_element_located((By.XPATH, '//*[@id="password"]')))
     pw.send_keys(creds[1] + '\n')
     WebDriverWait(driver, 20).until(lambda x: driver.current_url != 'https://www.hvids.net/ucp.php?mode=login')
+    return driver
+
 
 if __name__ == '__main__':
     login_to_hvids(create_driver(False))

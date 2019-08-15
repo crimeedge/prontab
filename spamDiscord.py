@@ -4,6 +4,7 @@ import time
 from platform import system
 
 import selenium.webdriver.support.expected_conditions as ec
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -24,11 +25,14 @@ def discord_wipe(driver):
         s_enter.perform()
 
 
-def spam_discord(known_video_ids, url='https://discordapp.com/channels/570509358677360650/570509358677360652'):
-    driver = create_driver(False)
-    login_to_discord(driver)
+def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/570509358677360650/570509358677360652'):
+
     time.sleep(3)
     driver.get(url)
+    try:
+        WebDriverWait(driver, 1).until(ec.element_to_be_clickable((By.CSS_SELECTOR, ".lookFilled-1Gx00P"))).click()
+    except TimeoutException:
+        print("click on cont timeout")
     paste_text = ""
     if system().lower() == 'darwin':
         i = 0
