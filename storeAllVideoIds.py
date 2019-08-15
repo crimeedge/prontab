@@ -1,4 +1,5 @@
 from collections import defaultdict
+from concurrent.futures.thread import ThreadPoolExecutor
 
 from datetime import datetime
 
@@ -14,6 +15,10 @@ import json
 from youtube.youtubeVideos import filter_restricteds_from_vid_list
 
 
+def _video_ids_from_playlist_ids(youtube, playlist_id):
+    return get_video_ids(get_playlist_items_from_id(youtube, playlist_id))
+
+
 def my_youtube_ids_to_json():
     youtube = get_api_service()
 
@@ -24,11 +29,20 @@ def my_youtube_ids_to_json():
     cached_dict = defaultdict(lambda: -1, json.load(open('dMyKnown.json', 'r')))
     known_video_ids = cached_dict['video_ids']
 
+    need_updates = []
+
     for playlist_id in playlist_ids_dict:
         if playlist_ids_dict[playlist_id] > cached_dict[playlist_id]:
             print(playlist_id)
-            items = get_playlist_items_from_id(youtube, playlist_id)
-            known_video_ids.extend(get_video_ids(items))
+            need_updates.append(playlist_id)
+
+            # known_video_ids.extend(_video_ids_from_playlist_ids(youtube, playlist_id))
+
+    needs = len(need_updates)
+    if needs > 0:
+        with ThreadPoolExecutor(max_workers=needs) as threader:
+            for _ in threader.map(_video_ids_from_playlist_ids, [youtube] * needs, need_updates):
+                known_video_ids.extend(_)
 
     known_video_ids = list(set(known_video_ids))
     print(len(known_video_ids))
@@ -106,10 +120,10 @@ def check_existing():
 
 
 if __name__ == "__main__":
-    remove_brokens_from_my_known()
+    # remove_brokens_from_my_known()
     # check_existing()
     # combine_brokens()
-    # my_youtube_ids_to_json()
+    my_youtube_ids_to_json()
     # y=get_api_service()
     # # poop
     # other_youtube_ids_to_json(y, ['LLzjiyMpyPuHnQyVFp9Nimbg'], ['UCzjiyMpyPuHnQyVFp9Nimbg'], [],
