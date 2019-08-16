@@ -1,5 +1,5 @@
 from addVideoToPlaylistSel import make_tuple_diffs, add_diffs
-from driverMethods import create_driver, login_to_hvids
+from driverMethods import create_driver, login_to_hvids, login_to_discord
 from hvidsYoutubeIds import get_hvids_by_sel
 from spamDiscord import spam_discord
 from storeAllVideoIds import my_youtube_ids_to_json, other_youtube_ids_to_json
@@ -20,7 +20,8 @@ def main():
         # vsh
         other_youtube_ids_to_json(y, [], [], ['FLt5AE3F1yzn2IsASa55-c3Q', 'PL4X95Lb2XkAG3zaVxwgu2A-3s46n8hsIG'],
                                   "dVsh.json")
-        driver = create_driver(True)
+        driver = create_driver(False)
+        login_to_hvids(driver)
         get_hvids_by_sel(driver, "https://www.hvids.net/viewforum.php?f=21&start=", "dHvidsMakeover.json")
         get_hvids_by_sel(driver, 'https://www.hvids.net/viewforum.php?f=19&start=', "dHvidsBuzzcut.json")
         get_hvids_by_sel(driver, "https://www.hvids.net/viewforum.php?f=39&start=", "dHvidsCharity.json")
