@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 
 from googleapiclient.errors import HttpError
 
-from youtube.youtubeMake import get_authenticated_service, default_scope
+from youtube.youtubeMake import get_authenticated_service, default_scope, get_api_service
 from youtube.youtubeAuth import delete_by_playlist_item_id
 from youtube.youtubePlaylistItems import get_playlist_items_from_id
 from youtube.youtubePlaylists import get_playlist_ids_list
@@ -33,10 +34,7 @@ def get_video_ids(items):
     return video_ids
 
 
-def main():
-    # Disable OAuthlib's HTTPS verification when running locally.
-    # *DO NOT* leave this option enabled in production.
-    # os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+def remove_privates_by_api():
 
     youtube = get_authenticated_service(default_scope)
     playlist_ids = get_playlist_ids_list(youtube)
@@ -54,8 +52,28 @@ def main():
     print('number of videos del33ted: %s', count)
 
 
+def move_into_blacklist():
+
+    youtube = get_api_service()
+    playlist_ids = get_playlist_ids_list(youtube)
+    blackdict = json.load(open("dBlacklist.json", 'r'))
+    # TODO: hardcode already blacklist playlists
+    already_blacklist=[]
+    set_adds=set()
+    for playlist_id in playlist_ids:
+        if playlist_id not in already_blacklist:
+            items = get_playlist_items_from_id(youtube, playlist_id)
+            for item in items:
+                # TODO: figure out what the correct field is here.
+                if item['snippet']['channelId???'] in blackdict:
+                    set_adds.add((item['snippet']['resourceId']['videoId'], "dBlacklistedVids.json"))
+                    # TODO: figure out how to get original playlist's name
+                    set_adds.add((item['snippet']['resourceId']['videoId'], "TheOriginPlaylist"))
+
+    # next, call add_diffs
+    json.dump(list(set_adds), open('dBlacklistedVids.json', 'w'))
 if __name__ == "__main__":
-    main()
+    remove_privates_by_api()
     # youtube = get_api_service()
     # listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
     # print(listy)

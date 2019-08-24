@@ -17,6 +17,8 @@ from pyformance import MetricsRegistry
 
 import time
 
+from youtube.youtubeVideos import update_vid_playlist_insertion_dict
+
 
 def add_vids(vid_tuple_sublist):
     driver = create_driver(False)
@@ -91,17 +93,23 @@ def make_tuple_diffs() -> int:
     jsons_in_order = ['dHvidsMakeover.json', 'dPoop.json', 'dH0.json', 'dHvidsBuzzcut.json', 'dHvidsCharity.json',
                       'dVsh.json']
 
-    unknown_ids_tuples = []
+    unknown_ids_dict={}
+
     for jason in jsons_in_order:
         jason_ids = json.load(open(jason, 'r'))['video_ids']
         print(len(jason_ids))
         news_ids = set(jason_ids).difference(known_video_ids)
         print(len(news_ids))
-        unknown_ids_tuples.extend((news_id, jason) for news_id in news_ids)
-        print(len(unknown_ids_tuples))
+        # unknown_ids_tuples.extend((news_id, jason) for news_id in news_ids)
+        for news_id in news_ids:
+            unknown_ids_dict[news_id]=jason
+        # print(len(unknown_ids_tuples))
         known_video_ids = known_video_ids.union(set(jason_ids))
         print(len(known_video_ids))
 
+    unknown_ids_dict = update_vid_playlist_insertion_dict(get_api_service(),unknown_ids_dict)
+
+    unknown_ids_tuples = [(news_id,unknown_ids_dict[news_id]) for news_id in unknown_ids_dict]
     print(unknown_ids_tuples)
     json.dump(unknown_ids_tuples, open('dDiffs.json', 'w'))
     return len(unknown_ids_tuples)

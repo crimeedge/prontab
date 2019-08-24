@@ -4,7 +4,7 @@ from addVideoToPlaylistSel import get_ids_from_playlist_ids, add_diffs
 from removePrivates import get_video_ids
 from youtube.youtubeMake import get_api_service
 from youtube.youtubePlaylistItems import get_playlist_items_from_id
-from youtube.youtubeVideos import get_unlisteds_from_list
+from youtube.youtubeVideos import get_unlisteds_from_list, update_vid_playlist_insertion_dict
 
 
 def clwi_unlisted_test():
@@ -64,9 +64,13 @@ def print_differences_of_unlisted():
         json.dump(u_diffs, outfile)
 
 
-if __name__ == "__main__":
-    temp_api_unlisted()
-    dump_unlisteds_from_known()
-    dump_unlisteds_from_diffs()
-    print_differences_of_unlisted()
-    add_diffs('dUDiffs.json')
+# if __name__ == "__main__":
+#     temp_api_unlisted()
+#     dump_unlisteds_from_known()
+#     dump_unlisteds_from_diffs()
+#     print_differences_of_unlisted()
+#     add_diffs('dUDiffs.json')
+if __name__ == '__main__':
+    test_vids = json.load(open('dMyKnown.json', 'r'))['video_ids']
+    test_dict = {i: None for i in test_vids}
+    update_vid_playlist_insertion_dict(get_api_service(), test_dict)
