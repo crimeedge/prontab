@@ -161,5 +161,5 @@ if __name__ == "__main__":
     # for jason in jsons_in_order:
     #     make_new_playlist(driver,jason)
     # make_tuple_diffs()
-    add_diffs('dDiffs.json')
+    add_diffs('dBlacklistedVids.json')
     # add_diffs('dUDiffs.json')

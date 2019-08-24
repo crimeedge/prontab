@@ -16,6 +16,22 @@ def get_playlist_ids_list(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
     return ids
 
 
+def get_playlist_ids_title_dict(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
+    request = youtube.playlists().list(
+        part="id,snippet",
+        maxResults=50,
+        channelId=channel_id
+    )
+    ids = dict()
+    while request:
+        response = request.execute()
+        for item in response['items']:
+            ids[item["id"]] = item["snippet"]["title"]
+        request = youtube.playlistItems().list_next(request, response)
+
+    return ids
+
+
 def get_playlist_ids_count_dict(youtube, channel_id='UCuQjQ-iqbHh-hIMrDwfYfYA'):
     request = youtube.playlists().list(
         part="id,contentDetails",

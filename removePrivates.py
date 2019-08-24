@@ -2,11 +2,11 @@
 import json
 
 from googleapiclient.errors import HttpError
-
 from youtube.youtubeMake import get_authenticated_service, default_scope, get_api_service
 from youtube.youtubeAuth import delete_by_playlist_item_id
 from youtube.youtubePlaylistItems import get_playlist_items_from_id
-from youtube.youtubePlaylists import get_playlist_ids_list
+from youtube.youtubePlaylists import get_playlist_ids_list, get_playlist_ids_title_dict
+from youtube.youtubeVideos import update_vid_playlist_insertion_dict
 
 
 def filter_private_playlist_items(items, get_privates=True):
@@ -35,7 +35,6 @@ def get_video_ids(items):
 
 
 def remove_privates_by_api():
-
     youtube = get_authenticated_service(default_scope)
     playlist_ids = get_playlist_ids_list(youtube)
     count = 0
@@ -53,27 +52,35 @@ def remove_privates_by_api():
 
 
 def move_into_blacklist():
-
     youtube = get_api_service()
-    playlist_ids = get_playlist_ids_list(youtube)
+    playlist_ids = get_playlist_ids_title_dict(youtube)
     blackdict = json.load(open("dBlacklist.json", 'r'))
-    # TODO: hardcode already blacklist playlists
-    already_blacklist=[]
-    set_adds=set()
+    # dBlacklistedVids.json, HP0Re, fucking repostee, APIUnlisted
+    already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI', 'PLXoAM842ovaDBSVi63LFY3W8jDGhzbJdO',
+                         'PLXoAM842ovaCtiG-7KmWSAXhau5JPWqGu','PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
+    set_adds = set()
     for playlist_id in playlist_ids:
         if playlist_id not in already_blacklist:
             items = get_playlist_items_from_id(youtube, playlist_id)
+            vid_dict = {item['snippet']['resourceId']['videoId']: "None" for item in items}
+            vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict)
             for item in items:
-                # TODO: figure out what the correct field is here.
-                if item['snippet']['channelId???'] in blackdict:
+                if vid_dict[item['snippet']['resourceId']['videoId']] == "dBlacklistedVids.json":
                     set_adds.add((item['snippet']['resourceId']['videoId'], "dBlacklistedVids.json"))
                     # TODO: figure out how to get original playlist's name
-                    set_adds.add((item['snippet']['resourceId']['videoId'], "TheOriginPlaylist"))
-
+                    set_adds.add((item['snippet']['resourceId']['videoId'], playlist_ids[playlist_id]))
+            print(playlist_ids[playlist_id])
+        # if len(set_adds)>2:
+        #     print(set_adds)
+        #     break
     # next, call add_diffs
     json.dump(list(set_adds), open('dBlacklistedVids.json', 'w'))
+
+
 if __name__ == "__main__":
-    remove_privates_by_api()
+    # remove_privates_by_api()
+    move_into_blacklist()
+    # addVideoToPlaylistSel.add_diffs('dBlacklistedVids.json')
     # youtube = get_api_service()
     # listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
     # print(listy)

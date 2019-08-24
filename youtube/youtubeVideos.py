@@ -86,10 +86,10 @@ def update_vid_playlist_insertion_dict(youtube, vdict):
                 pass
             elif "blocked" in item['contentDetails']['regionRestriction']:
                 if "US" not in item['contentDetails']['regionRestriction']["blocked"]:
-                    print(item['contentDetails']['regionRestriction'])
+                    # print(item['contentDetails']['regionRestriction'])
                     pass
             elif "US" in item['contentDetails']['regionRestriction']["allowed"]:
-                print(item['contentDetails']['regionRestriction'])
+                # print(item['contentDetails']['regionRestriction'])
                 pass
             else:
                 print(vdict.pop(item['id'], "None lol?"))
@@ -99,7 +99,7 @@ def update_vid_playlist_insertion_dict(youtube, vdict):
             elif item['snippet']['channelId'] in blackdict:
                 vdict[item['id']] = 'dBlacklistedVids.json'
                 blacklist_count+=1
-                print(blacklist_count)
+                print("blacklist count: ", blacklist_count)
                 # print(item['snippet']['channelTitle'])
 
         i = j

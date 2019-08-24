@@ -85,7 +85,9 @@ def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/5
         pasty.perform()
         discord_wipe(driver)
         pyperclip.copy(clipboard_storage)
-    # driver.quit()
+    # hard coded sleep
+    time.sleep(len(known_video_ids)/5.0)
+    driver.quit()
 
 
 if __name__ == '__main__':
