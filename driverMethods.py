@@ -8,11 +8,17 @@ import selenium.webdriver.support.expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 
-def create_driver(with_data: bool = True) -> webdriver.Chrome:
+def create_driver(with_data: bool = True, with_speed=False) -> webdriver.Chrome:
     chrome_options = Options()
     chrome_options.add_argument('--always-authorized-plugins=true')
-    chrome_options.add_argument("--disable-infobars")
+
+    # chrome_options.add_argument("--disable-infobars")
+    # chrome_options.add_experimental_option('useAutomationExtension', False)
+    # chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
     chrome_options.add_extension('uBlock-Origin_v1.20.0.crx')
+    if with_speed:
+        # chrome_options.add_extension('extension_0_5_7_0.crx')
+        chrome_options.add_argument('--disable-application-cache')
     if with_data:
         chrome_options.add_argument("--user-data-dir=chrome-data")
     if system().lower() == 'darwin':

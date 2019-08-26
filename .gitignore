@@ -5,3 +5,4 @@ chrome-data
 .idea/
 __pycache__/
 selenium_tests/
+debug.log
