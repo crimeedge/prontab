@@ -1,4 +1,6 @@
 import json
+from typing import List
+
 import pyperclip
 import time
 from platform import system
@@ -11,6 +13,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from driverMethods import create_driver, login_to_discord
+from youtube.youtubeMake import get_api_service
+from youtube.youtubeVideos import _get_parts_from_video_ids
 
 
 def discord_wipe(driver):
@@ -25,14 +29,16 @@ def discord_wipe(driver):
         s_enter.perform()
 
 
-def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/570509358677360650/570509358677360652'):
-
+def prepare_discord(driver, url):
     time.sleep(3)
     driver.get(url)
     try:
         WebDriverWait(driver, 1).until(ec.element_to_be_clickable((By.CSS_SELECTOR, ".lookFilled-1Gx00P"))).click()
     except TimeoutException:
         print("click on cont timeout")
+
+
+def paste_discord(driver, known_video_ids):
     paste_text = ""
     if system().lower() == 'darwin':
         i = 0
@@ -53,7 +59,7 @@ def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/5
             i += 1
         discord_wipe(driver)
     elif system().lower() == 'windows':
-        clipboard_storage=pyperclip.paste()
+        clipboard_storage = pyperclip.paste()
         i = 0
         discord_wipe(driver)
         for video_id in known_video_ids:
@@ -85,11 +91,32 @@ def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/5
         pasty.perform()
         discord_wipe(driver)
         pyperclip.copy(clipboard_storage)
+
+
+def spam_discord(driver, known_video_ids, url='https://discordapp.com/channels/570509358677360650/570509358677360652'):
+    prepare_discord(driver, url)
+    paste_discord(driver, known_video_ids)
     # hard coded sleep
-    time.sleep(len(known_video_ids)/5.0)
+    time.sleep(len(known_video_ids) / 5.0)
     driver.quit()
 
 
+def filter_polish_from_vid_list(youtube, ids: List[str], driver):
+    print(len(ids))
+    # filtereds = []
+    i = 0
+    while i < len(ids):
+        j = min(i + 50, len(ids))
+        for item in _get_parts_from_video_ids(youtube, ids[i:j], "snippet")['items']:
+            if "Ś" in item['snippet']['title'] or "Ł" in item['snippet']['title']:
+                paste_discord(driver, [item['id']])
+        i = j
+    # print(len(filtereds))
+    # return filtereds
+
+
 if __name__ == '__main__':
-    unknown_ids_tuples = json.load(open('dMyKnown.json', 'r'))['video_ids'][:8]
-    spam_discord(unknown_ids_tuples)
+    unknown_ids_tuples = json.load(open('dMyKnown.json', 'r'))['video_ids']
+    driver = create_driver(True,False)
+    prepare_discord(driver,'https://discordapp.com/channels/464754024802025487/466070782439718922')
+    filter_polish_from_vid_list(get_api_service(),unknown_ids_tuples,driver)

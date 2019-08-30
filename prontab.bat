@@ -1,1 +1,1 @@
-python3 endToEnd.py 3
+python endToEnd.py 3

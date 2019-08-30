@@ -1,1 +1,1 @@
-python3 timeHijack.py
+python timeHijack.py
