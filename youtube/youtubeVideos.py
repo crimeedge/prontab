@@ -77,7 +77,7 @@ def update_vid_playlist_insertion_dict(youtube, vdict):
     i = 0
     ids = list(vdict.keys())
     blackdict = json.load(open("dBlacklist.json", 'r'))
-    blacklist_count = 0
+    lq_count = 0
     while i < len(ids):
         j = min(i + 50, len(ids))
         for item in _get_parts_from_video_ids(youtube, ids[i:j], "status,snippet,contentDetails")['items']:
@@ -98,8 +98,10 @@ def update_vid_playlist_insertion_dict(youtube, vdict):
                 vdict[item['id']] = 'APIUnlisted'
             elif item['snippet']['channelId'] in blackdict:
                 vdict[item['id']] = 'dBlacklistedVids.json'
-                blacklist_count+=1
-                print("blacklist count: ", blacklist_count)
+            elif item['contentDetails']['definition']=='sd':
+                vdict[item['id']] = 'dLQ.json'
+                lq_count += 1
+                print("lq count: ", lq_count)
                 # print(item['snippet']['channelTitle'])
 
         i = j

@@ -51,10 +51,9 @@ def remove_privates_by_api():
     print('number of videos del33ted: %s', count)
 
 
-def move_into_blacklist():
+def move_into_blacklist(playlist_ids = get_playlist_ids_title_dict(get_api_service())):
     youtube = get_api_service()
-    playlist_ids = get_playlist_ids_title_dict(youtube)
-    blackdict = json.load(open("dBlacklist.json", 'r'))
+    # blackdict = json.load(open("dBlacklist.json", 'r'))
     # dBlacklistedVids.json, HP0Re, fucking repostee, APIUnlisted
     already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI', 'PLXoAM842ovaDBSVi63LFY3W8jDGhzbJdO',
                          'PLXoAM842ovaCtiG-7KmWSAXhau5JPWqGu','PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
@@ -65,8 +64,8 @@ def move_into_blacklist():
             vid_dict = {item['snippet']['resourceId']['videoId']: "None" for item in items}
             vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict)
             for item in items:
-                if vid_dict[item['snippet']['resourceId']['videoId']] == "dBlacklistedVids.json":
-                    set_adds.add((item['snippet']['resourceId']['videoId'], "dBlacklistedVids.json"))
+                if vid_dict[item['snippet']['resourceId']['videoId']] == "dBlacklistedVids.json" or vid_dict[item['snippet']['resourceId']['videoId']] == "dLQ.json":
+                    set_adds.add((item['snippet']['resourceId']['videoId'], vid_dict[item['snippet']['resourceId']['videoId']]))
                     # TODO: figure out how to get original playlist's name
                     set_adds.add((item['snippet']['resourceId']['videoId'], playlist_ids[playlist_id]))
             print(playlist_ids[playlist_id])
@@ -77,9 +76,30 @@ def move_into_blacklist():
     json.dump(list(set_adds), open('dBlacklistedVids.json', 'w'))
 
 
+# def move_into_lq():
+#     youtube = get_api_service()
+#     playlist_ids = {'PLXoAM842ovaBhnS-JAtoRfLWdUIJRFhWR':'APIH0Poop-7'}
+#     set_adds = set()
+#     for playlist_id in playlist_ids:
+#         items = get_playlist_items_from_id(youtube, playlist_id)
+#         # fix this shit and write more generalizable methonds GDI
+#         vid_dict = {item['snippet']['resourceId']['videoId']: "None" for item in items}
+#         vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict)
+#         for item in items:
+#             if vid_dict[item['snippet']['resourceId']['videoId']] == "dBlacklistedVids.json":
+#                 set_adds.add((item['snippet']['resourceId']['videoId'], "dBlacklistedVids.json"))
+#                 set_adds.add((item['snippet']['resourceId']['videoId'], playlist_ids[playlist_id]))
+#         print(playlist_ids[playlist_id])
+#         # if len(set_adds)>2:
+#         #     print(set_adds)
+#         #     break
+#     # next, call add_diffs
+#     json.dump(list(set_adds), open('dLQ.json', 'w'))
+
+
 if __name__ == "__main__":
     # remove_privates_by_api()
-    move_into_blacklist()
+    move_into_blacklist(playlist_ids = {'PLXoAM842ovaBhnS-JAtoRfLWdUIJRFhWR':'APIH0Poop-7','PLXoAM842ovaDcAvScYKXgaThVIghj-7Jh':'APIH0Poop-6'})
     # addVideoToPlaylistSel.add_diffs('dBlacklistedVids.json')
     # youtube = get_api_service()
     # listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')
