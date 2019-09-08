@@ -138,12 +138,10 @@ def add_diffs(diff_filename='dDiffs.json'):
             print(len(split))
 
         broken_total = json.load(open("dBroken.json", 'r'))
-        try:
-            with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
-                for _ in threader.map(add_vids, split_uvi):
-                    broken_total.extend(_)
-        except:
-            print(sys.exc_info()[0])
+        
+        with ThreadPoolExecutor(max_workers=len(split_uvi)) as threader:
+            for _ in threader.map(add_vids, split_uvi):
+                broken_total.extend(_)
 
         broken_total = list(set(broken_total))
 
