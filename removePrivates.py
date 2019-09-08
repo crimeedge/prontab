@@ -55,8 +55,7 @@ def move_into_blacklist(playlist_ids = get_playlist_ids_title_dict(get_api_servi
     youtube = get_api_service()
     # blackdict = json.load(open("dBlacklist.json", 'r'))
     # dBlacklistedVids.json, HP0Re, fucking repostee, APIUnlisted
-    already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI', 'PLXoAM842ovaDBSVi63LFY3W8jDGhzbJdO',
-                         'PLXoAM842ovaCtiG-7KmWSAXhau5JPWqGu','PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
+    already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI','PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
     set_adds = set()
     for playlist_id in playlist_ids:
         if playlist_id not in already_blacklist:
