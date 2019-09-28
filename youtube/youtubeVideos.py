@@ -73,7 +73,7 @@ def _get_parts_from_video_ids(youtube, ids: List[str], part: str):
     return response
 
 
-def update_vid_playlist_insertion_dict(youtube, vdict):
+def update_vid_playlist_insertion_dict(youtube, vdict,namesplit=3):
     i = 0
     ids = list(vdict.keys())
     blackdict = json.load(open("dBlacklist.json", 'r'))
@@ -99,7 +99,7 @@ def update_vid_playlist_insertion_dict(youtube, vdict):
             elif item['snippet']['channelId'] in blackdict:
                 vdict[item['id']] = 'dBlacklistedVids.json'
             elif item['contentDetails']['definition']=='sd':
-                vdict[item['id']] = 'dLQ.json'
+                vdict[item['id']] = 'dLQ.json'+str(lq_count%namesplit)
                 lq_count += 1
                 print("lq count: ", lq_count)
                 # print(item['snippet']['channelTitle'])
