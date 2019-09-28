@@ -101,7 +101,7 @@ def update_vid_playlist_insertion_dict(youtube, vdict,namesplit=3):
             elif item['contentDetails']['definition']=='sd':
                 vdict[item['id']] = 'dLQ.json'+str(lq_count%namesplit)
                 lq_count += 1
-                print("lq count: ", lq_count)
+                print('dLQ.json'+str(lq_count%namesplit),"lq count: ", lq_count)
                 # print(item['snippet']['channelTitle'])
 
         i = j

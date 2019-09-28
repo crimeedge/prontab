@@ -55,6 +55,7 @@ def move_into_blacklist(playlist_ids=get_playlist_ids_title_dict(get_api_service
     youtube = get_api_service()
     # dBlacklistedVids.json, APIUnlisted
     already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI', 'PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
+    bad_names = ["dBlacklistedVids.json","dLQ.json0","dLQ.json1","dLQ.json2"]
 
     set_adds = set()
     for playlist_id in playlist_ids:
@@ -63,12 +64,12 @@ def move_into_blacklist(playlist_ids=get_playlist_ids_title_dict(get_api_service
             vid_dict = {item['snippet']['resourceId']['videoId']: "None" for item in items}
             vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict)
             for item in items:
-                if vid_dict[item['snippet']['resourceId']['videoId']] == "dBlacklistedVids.json" or vid_dict[
-                    item['snippet']['resourceId']['videoId']] == "dLQ.json":
+                if vid_dict[item['snippet']['resourceId']['videoId']] in bad_names  :
                     set_adds.add(
                         (item['snippet']['resourceId']['videoId'], vid_dict[item['snippet']['resourceId']['videoId']]))
                     # TODO: figure out how to get original playlist's name
                     set_adds.add((item['snippet']['resourceId']['videoId'], playlist_ids[playlist_id]))
+                    # print('set_adds:'+str(len(set_adds)))
             print(playlist_ids[playlist_id])
         # if len(set_adds)>2:
         #     print(set_adds)
