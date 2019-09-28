@@ -74,6 +74,14 @@ def _get_parts_from_video_ids(youtube, ids: List[str], part: str):
 
 
 def update_vid_playlist_insertion_dict(youtube, vdict,namesplit=3):
+    # TODO: Fix magic
+    """
+    Warning: magical function
+    :param youtube:
+    :param vdict:
+    :param namesplit:
+    :return:
+    """
     i = 0
     ids = list(vdict.keys())
     blackdict = json.load(open("dBlacklist.json", 'r'))

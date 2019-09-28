@@ -2,6 +2,8 @@
 import json
 
 from googleapiclient.errors import HttpError
+
+import addVideoToPlaylistSel
 from youtube.youtubeMake import get_authenticated_service, default_scope, get_api_service
 from youtube.youtubeAuth import delete_by_playlist_item_id
 from youtube.youtubePlaylistItems import get_playlist_items_from_id
@@ -52,19 +54,21 @@ def remove_privates_by_api():
 
 
 def move_into_blacklist(playlist_ids=get_playlist_ids_title_dict(get_api_service())):
+    # TODO: fix magic function
     youtube = get_api_service()
     # dBlacklistedVids.json, APIUnlisted
     already_blacklist = ['PLXoAM842ovaBTZajyyFHcIYqtrCP7SBcI', 'PLXoAM842ovaAO2MHT2ZyED3Gs5Ifmdm1G']
-    bad_names = ["dBlacklistedVids.json","dLQ.json0","dLQ.json1","dLQ.json2"]
-
+    namesplit = 3
+    bad_names =["dLQ.json"+str(i) for i in range(namesplit)]
+    bad_names.append("dBlacklistedVids.json")
     set_adds = set()
     for playlist_id in playlist_ids:
         if playlist_id not in already_blacklist:
             items = get_playlist_items_from_id(youtube, playlist_id)
             vid_dict = {item['snippet']['resourceId']['videoId']: "None" for item in items}
-            vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict)
+            vid_dict = update_vid_playlist_insertion_dict(youtube, vid_dict,namesplit)
             for item in items:
-                if vid_dict[item['snippet']['resourceId']['videoId']] in bad_names  :
+                if vid_dict[item['snippet']['resourceId']['videoId']] in bad_names:
                     set_adds.add(
                         (item['snippet']['resourceId']['videoId'], vid_dict[item['snippet']['resourceId']['videoId']]))
                     # TODO: figure out how to get original playlist's name
@@ -106,6 +110,7 @@ if __name__ == "__main__":
                                       'PLXoAM842ovaD0BtaoEQis7acO0LPGP8_e': 'dH0.json',
                                       'PLXoAM842ovaDV60ezZW9ZuxeNks66umS6':'dPoop.json',
                                       'PLXoAM842ovaDOp0guagmY96SCZeg2kB2A':'dHvidsBuzzcut.json'})
+
     # addVideoToPlaylistSel.add_diffs('dBlacklistedVids.json')
     # youtube = get_api_service()
     # listy = get_playlist_ids_count_dict(youtube, 'UCzjiyMpyPuHnQyVFp9Nimbg')

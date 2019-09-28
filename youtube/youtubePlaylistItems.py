@@ -24,9 +24,17 @@ def _parse_date(string):
     return dt
 
 
-def get_playlist_items_from_liked_id(youtube, playlist_id="LLzjiyMpyPuHnQyVFp9Nimbg",after_date="2019-05-01"):
+def get_playlist_items_from_liked_id(youtube, playlist_id="LLzjiyMpyPuHnQyVFp9Nimbg",part="snippet",after_date="2019-05-01"):
+    """
+
+    :param part:
+    :param youtube:
+    :param playlist_id:
+    :param after_date: a date after which we should stop searching, say "2019-05-01"
+    :return:
+    """
     request = youtube.playlistItems().list(
-        part="snippet",
+        part=part,
         maxResults=50,
         playlistId=playlist_id
     )
@@ -34,8 +42,9 @@ def get_playlist_items_from_liked_id(youtube, playlist_id="LLzjiyMpyPuHnQyVFp9Ni
     while request:
         response = request.execute()
         items += response["items"]
-        if _parse_date( response["items"][-1]["snippet"]["publishedAt"]) < _parse_date(after_date):
-            request = None
+        if after_date:
+            if _parse_date( response["items"][-1]["snippet"]["publishedAt"]) < _parse_date(after_date):
+                request = None
         else:
             request = youtube.playlistItems().list_next(request, response)
 
